@@ -1,0 +1,227 @@
+{
+    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+    "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+    "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "description": None,
+        "title": "ASPIRE-Test-Install",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "aud": "268300000000000006",
+    "azp": "268300000000000006",
+    "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "242:a3944f869439534b632007a01a257899fa9fe1de",
+    "exp": 1718917152,
+    "iat": 1718913552,
+    "iss": "https://canvas.instructure.com",
+    "nonce": "2gb6_e4g-NT36HBc6y0odCHBVFVJPftbYtKjPP0payM",
+    "sub": "c6ceb7cb-8d01-4dfa-8bbb-6425039e638b",
+    "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "http://localhost:8080/oidc/launch",
+    "picture": "https://canvas.instructure.com/images/messages/avatar-50.png",
+    "email": "a2hopkins@ucsd.edu",
+    "name": "Alex Hopkins",
+    "given_name": "Alex",
+    "family_name": "Hopkins",
+    "https://purl.imsglobal.org/spec/lti/claim/lis": {
+        "person_sourcedid": None,
+        "course_offering_sourcedid": None,
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/context": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "label": "ASPIRE-Test-Install",
+        "title": "ASPIRE-Test-Install",
+        "type": [
+            "http://purl.imsglobal.org/vocab/lis/v2/course#CourseOffering"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
+        "guid": "iA0XrK7OfsuZvjtbx609EafgfC1iAEST8xHJcxuE",
+        "name": "University of California, San Diego",
+        "version": "cloud",
+        "product_family_code": "canvas",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
+        "document_target": "iframe",
+        "return_url": "https://ucsd-dev.instructure.com/courses/107/external_content/success/external_tool_redirect",
+        "locale": "en",
+        "height": 800,
+        "width": 800,
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "locale": "en",
+    "https://purl.imsglobal.org/spec/lti/claim/roles": [
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/system/person#User"
+    ],
+    "https://purl.imsglobal.org/spec/lti/claim/custom": {},
+    "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
+        "scope": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/score"
+        ],
+        "lineitems": "https://ucsd-dev.instructure.com/api/lti/courses/107/line_items",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
+        "context_memberships_url": "https://ucsd-dev.instructure.com/api/lti/courses/107/names_and_roles",
+        "service_versions": [
+            "2.0"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/lti11_legacy_user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+    "https://purl.imsglobal.org/spec/lti/claim/lti1p1": {
+        "user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+        "oauth_consumer_key": "6hTcUvfWDZRNNhYCryUxa3nnNa7U2MLzBJPXZ4ZhJeRKN7RRna32KrhZ2RWEWvxc",
+        "oauth_consumer_key_sign": "PBS/MxFPv4FTbj+BEYMjH7UVYnslzAMZWNSY7Hcn7xg=",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "errors": {
+        "errors": {}
+    },
+    "https://www.instructure.com/placement": "course_navigation"
+}
+
+{
+    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+    "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+    "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "description": None,
+        "title": "ASPIRE-Test-Install",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "aud": "268300000000000006",
+    "azp": "268300000000000006",
+    "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "242:a3944f869439534b632007a01a257899fa9fe1de",
+    "exp": 1719095221,
+    "iat": 1719091621,
+    "iss": "https://canvas.instructure.com",
+    "nonce": "afbXUkPnGdA2E_8AATw_WmWyOkUHttzPEnVrNvv0UcY",
+    "sub": "c6ceb7cb-8d01-4dfa-8bbb-6425039e638b",
+    "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "http://localhost:8080/oidc/launch",
+    "https://purl.imsglobal.org/spec/lti/claim/context": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "label": "ASPIRE-Test-Install",
+        "title": "ASPIRE-Test-Install",
+        "type": [
+            "http://purl.imsglobal.org/vocab/lis/v2/course#CourseOffering"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
+        "guid": "iA0XrK7OfsuZvjtbx609EafgfC1iAEST8xHJcxuE",
+        "name": "University of California, San Diego",
+        "version": "cloud",
+        "product_family_code": "canvas",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
+        "document_target": "iframe",
+        "return_url": "https://ucsd-dev.instructure.com/courses/107/external_content/success/external_tool_redirect",
+        "locale": "en",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        },
+        "height": 800,
+        "width": 800
+    },
+    "locale": "en",
+    "https://purl.imsglobal.org/spec/lti/claim/roles": [
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/system/person#User"
+    ],
+    "https://purl.imsglobal.org/spec/lti/claim/custom": {},
+    "https://purl.imsglobal.org/spec/lti/claim/lti11_legacy_user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+    "https://purl.imsglobal.org/spec/lti/claim/lti1p1": {
+        "user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        },
+        "oauth_consumer_key": "6hTcUvfWDZRNNhYCryUxa3nnNa7U2MLzBJPXZ4ZhJeRKN7RRna32KrhZ2RWEWvxc",
+        "oauth_consumer_key_sign": "f0zhVG0VAGVJfmewFMR+6tT3Z20tQgRpzSe6Jo0GTv0="
+    },
+    "errors": {
+        "errors": {}
+    },
+    "picture": "https://canvas.instructure.com/images/messages/avatar-50.png",
+    "email": "a2hopkins@ucsd.edu",
+    "name": "Alex Hopkins",
+    "given_name": "Alex",
+    "family_name": "Hopkins",
+    "https://purl.imsglobal.org/spec/lti/claim/lis": {
+        "person_sourcedid": None,
+        "course_offering_sourcedid": None,
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
+        "scope": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/score"
+        ],
+        "lineitems": "https://ucsd-dev.instructure.com/api/lti/courses/107/line_items",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
+        "context_memberships_url": "https://ucsd-dev.instructure.com/api/lti/courses/107/names_and_roles",
+        "service_versions": [
+            "2.0"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://www.instructure.com/placement": "course_navigation"
+}
