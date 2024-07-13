@@ -24,7 +24,6 @@ const accordionItems = [
 },
 ]
 
-
 function moduleSelected(moduleId) {
     emit("updateSelectedModule", moduleId)
 }
@@ -59,7 +58,7 @@ function moduleSelected(moduleId) {
                     <AccordionContent class="module-accordion-content">
                         <ModuleMenuItems 
                             :module-summary="item.content_summary"
-                            :concepts="Object.values(props.concepts).filter(concept => concept.module === item.module_id)"
+                            :concepts="Object.values(props.concepts).filter(concept => concept.module.includes(item.module_id))"
                             :selected-concepts="props.selectedConcepts"
                             @update-selected-nodes="value => emit('updateSelectedNodes', 'update', value)"
                         />

@@ -1,5 +1,5 @@
-import { createApp, ref } from 'vue'
-import App from './App.vue'
+import { createApp, ref } from "vue"
+import App from "./App.vue"
 import VNetworkGraph from "v-network-graph"
 import "v-network-graph/lib/style.css"
 // import HelloWorld from "./components/HelloWorld.vue"
@@ -32,5 +32,6 @@ app.component(HomePage.name, HomePage)
 //     .component(QuizEditing.name, QuizEditing)
 
 app.provide("currentTab", ref("CourseSelection"));
-app.mount('#app')
+app.mount("#app")
+
 

@@ -25,10 +25,15 @@ function submit() {
             <p>Add a New Concept</p>
             <form>
                 <label for="concept-name">Concept Name</label>
-                <input id="concept-name" :value="conceptForm.concept_name" @input="event => conceptForm.concept_name = event.target.value"/>
+                <input id="concept-name" :value="conceptForm.name" @input="event => {
+                    conceptForm.name = event.target.value
+                    conceptForm.id = event.target.value
+                    conceptForm.module = null
+                    
+                    }"/>
             </form>
             <button @click="cancel">Cancel</button>
-            <button @click="submit">Submit</button>
+            <button v-if="conceptForm.name" @click="submit">Submit</button>
         </div>
     </div>
 </template>

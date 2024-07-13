@@ -8,9 +8,10 @@ export default {
 <script setup>
 import { ref, toRef, reactive, defineProps, defineEmits } from 'vue';
 import * as vNG from "v-network-graph"
-// import VNetworkGraph from "v-network-graph"
 import dagre from "dagre/dist/dagre.min.js"
 import DomainMenu from "./DomainMenu.vue"
+import DomainZoomSlider from "./DomainZoomSlider.vue"
+import ConceptSearch from './ConceptSearch.vue'
 
 
 const props = defineProps([
@@ -20,6 +21,7 @@ const props = defineProps([
     "focusNode",
     "defaultSettings",
     "selectedModule",
+    "selectedEdges"
 ])
 const emit = defineEmits([
     "updateNodes",
@@ -33,14 +35,17 @@ const emit = defineEmits([
     "joinConcepts",
     "moduleConceptAdd",
     "junctionDelete",
-    "moduleConceptDelete"
+    "moduleConceptDelete",
+    "transitiveReduction"
 ])
 
 const hovered = ref(null)
+const zoomLevel = ref(1)
 
 const layouts = reactive({
     nodes: {},
 })
+
 
 function getColor(node, mode = "node") {
     let color = props.defaultSettings.nodeColor
@@ -50,7 +55,7 @@ function getColor(node, mode = "node") {
     else if (props.selectedNodes.includes(node.id)) {
         color = props.defaultSettings.focusColor
     }
-    else if (node.module === props.selectedModule) {
+    else if (node.module.includes(props.selectedModule)) {
         color = props.defaultSettings.moduleColor
     }
     if (mode === "label")
@@ -65,12 +70,14 @@ function getColor(node, mode = "node") {
     }
 }
 
-// let x = 0
-// function getColor(node, mode="node") {
-//     x++
-//     console.log(`Count: ${x} - Node: ${node.id}`)
-//     return props.defaultSettings.nodeColor
-// }
+function tempGetEdgeColor(edge) {
+    console.log(edge)
+    if (props.selectedEdges.includes(`edge-${edge.source}-${edge.target}`)) {
+        return "#dd8800"
+    } else {
+        return "#aaa"
+    }
+}
 
 class minLayout {
     onDeactivate = () => null
@@ -116,7 +123,6 @@ class minLayout {
 }
 
 function labelOverflow(node) {
-    console.log(node)
     if (hovered.value === node.id || props.selectedNodes.includes(node.id)) {
         return node.name
     }
@@ -131,6 +137,8 @@ function compileConfig() {
     let config = {
         view: {
             autoPanAndZoomOnLoad: "fit-content",
+            minZoomLevel: 0.1,
+            maxZoomLevel: 3,
             onBeforeInitialDisplay: () => layout("BT"),
             layoutHandler: new minLayout()
         },
@@ -138,7 +146,7 @@ function compileConfig() {
             selectable: props.defaultSettings.selectable,
             normal: {
                 type: "circle",
-                radius: props.defaultSettings.nodeSize / 2,
+                radius: _ => (props.defaultSettings.nodeSize / 2) * zoomLevel.value,
                 strokeWidth: 0,
                 strokeColor: "#000000",
                 strokeDasharray: "0",
@@ -147,7 +155,7 @@ function compileConfig() {
             label: {
                 direction: "north",
                 color: props.defaultSettings.textColor,
-                fontSize: 12,
+                fontSize: _ => 12 * zoomLevel.value,
                 fontFamily: "Roboto",
                 margin: 4,
                 text: node => labelOverflow(node),
@@ -168,8 +176,8 @@ function compileConfig() {
         edge: {
             selectable: props.defaultSettings.selectable,
             normal: {
-                color: "#aaa",
-                width: 3,
+                color: edge => tempGetEdgeColor(edge),
+                width: _ => 3 * zoomLevel.value,
             },
             selected: {
                 width: 3,
@@ -191,7 +199,7 @@ function compileConfig() {
     if (props.defaultSettings.selectable) {
         config.node.selected = {
             type: "circle",
-            radius: props.defaultSettings.nodeSize / 2,
+            radius: _ => (props.defaultSettings.nodeSize) * zoomLevel.value,
             strokeWidth: 0,
             strokeColor: "#000000",
             strokeDasharray: "0",
@@ -199,7 +207,7 @@ function compileConfig() {
         }
         config.node.hover = {
             type: "circle",
-            radius: (props.defaultSettings.nodeSize / 2) + 8,
+            radius: _ => (props.defaultSettings.nodeSize / 2) * zoomLevel.value + 8,
             strokeWidth: 0,
             strokeColor: "#000000",
             strokeDasharray: "0",
@@ -220,16 +228,11 @@ function compileConfig() {
         // )
         // config.node.label.background = node => getColor(node, "label")
     }
-    console.log('config complete')
     return config
 }
 
-const configs = reactive(vNG.defineConfigs(compileConfig()))
-
-const graph = ref(vNG.VNetworkGraphInstance)
 
 function layout(direction) {
-    console.log("layout fired")
     if (Object.keys(props.nodes).length <= 1 || Object.keys(props.edges).length == 0) {
         return
     }
@@ -238,10 +241,13 @@ function layout(direction) {
     const g = new dagre.graphlib.Graph()
     // Set an object for the graph label
     g.setGraph({
+        align: "UR",
         rankdir: direction,
         nodesep: props.defaultSettings.nodeSize * 2,
-        edgesep: props.defaultSettings.nodeSize,
-        ranksep: props.defaultSettings.nodeSize * 2,
+        edgesep: 0,
+        ranksep: props.defaultSettings.nodeSize * 8,
+        // ranker: "tight-tree",
+        acyclicer: 'greedy'
     })
     // Default to assigning a new object as a label for each new edge.
     g.setDefaultEdgeLabel(() => ({}))
@@ -257,8 +263,8 @@ function layout(direction) {
     Object.values(props.edges).forEach(edge => {
         g.setEdge(edge.source, edge.target)
     })
-
     dagre.layout(g)
+    console.log(g)
 
     g.nodes().forEach((nodeId) => {
         if (g.node(nodeId)) {
@@ -267,7 +273,6 @@ function layout(direction) {
             layouts.nodes[nodeId] = { x, y }
         }
     })
-    console.log("layout complete")
 }
 
 function updateLayout(direction) {
@@ -282,7 +287,32 @@ function clearParams() {
     emit('updateFocusNodes', "clear")
 }
 
+
+const configs = reactive(vNG.defineConfigs(compileConfig()))
+
+const graph = ref(vNG.VNetworkGraphInstance)
+
+const isBoxSelectionMode = ref(false)
+
+function startBoxSelection() {
+    console.log("fired")
+    graph.value?.startBoxSelection({
+        stop: "click", // Trigger to exit box-selection mode
+        type: "append", // Behavior when a node is within a selection rectangle
+        withShiftKey: "invert", // `type` value if the shift key is pressed
+    })
+}
+
+function stopBoxSelection() {
+    console.log('fired2')
+    graph.value?.stopBoxSelection()
+}
+
 const eventHandlers = {
+    "view:mode": mode => {
+    // Observe mode change events
+    isBoxSelectionMode.value = mode === "box-selection"
+    },
     "node:pointerover": (node) => {
         hovered.value = node.node
     },
@@ -290,6 +320,7 @@ const eventHandlers = {
         hovered.value = null
     },
     "node:select": (node) => {
+        console.log("selected")
         if (node.length === 1) {
             clearParams()
             emit("updateNodes", node[0], true, "focusColor", "#f55d42")
@@ -305,28 +336,59 @@ const eventHandlers = {
     }
 }
 
-
 </script>
 
 <template>
     <div class="graph-box">
-        <v-network-graph ref="graph" :nodes="props.nodes" :edges="props.edges" :layouts="layouts" :configs="configs"
-            :event-handlers="eventHandlers" />
-        <div class="options-menu">
-            <img title="Refresh Layout" aria-label="Refresh Layout" class="refresh-btn-icon"
-                src="/static/assets/loading-icon.png" @click="updateLayout('BT')" />
-            <img title="Undo" aria-label="Undo" class="refresh-btn-icon" src="/static/assets/icon-undo.png"
-                @click="emit('undo')" />
-            <img title="Redo" aria-label="Redo" class="refresh-btn-icon" src="/static/assets/icon-redo.png"
-                @click="emit('redo')" />
-        </div>
+        <v-network-graph 
+            ref="graph" 
+            :nodes="props.nodes" 
+            :edges="props.edges" 
+            :layouts="layouts" 
+            :configs="configs"
+            :event-handlers="eventHandlers" 
+            v-model:zoom-level="zoomLevel"
+
+        />
         <div class="menu-wheel">
-            <DomainMenu :emit="emit" />
+            <DomainMenu 
+                :emit="emit" 
+                :selected-concepts="props.selectedNodes"
+                :selected-edges="props.selectedEdges"
+                :selected-module="props.selectedModule"
+                @box-select="isBoxSelectionMode ? stopBoxSelection() : startBoxSelection()"
+            />
+        </div>
+        <div class="display-options">
+            <div class="options-menu">
+                <img title="Refresh Layout" aria-label="Refresh Layout" class="refresh-btn-icon"
+                src="/static/assets/loading-icon.png" @click="updateLayout('BT')" />
+                <img title="Undo" aria-label="Undo" class="refresh-btn-icon" src="/static/assets/icon-undo.png"
+                @click="emit('undo')" />
+                <img title="Redo" aria-label="Redo" class="refresh-btn-icon" src="/static/assets/icon-redo.png"
+                @click="emit('redo')" />
+            </div>
+            <DomainZoomSlider v-model:zoom-level="zoomLevel" />
+            <ConceptSearch 
+                :concepts="props.nodes" 
+                :selected-concepts="props.selectedNodes"
+                :emit="emit"
+            />
         </div>
     </div>
 </template>
 
 <style scoped>
+.display-options {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 6px;
+    left: 6px;
+    z-index: 999;
+    width: 10rem;
+    
+}
 .popover-test {
     display: flex;
     width: fit-content;
@@ -348,15 +410,12 @@ const eventHandlers = {
 }
 
 .options-menu {
-    position: absolute;
     display: flex;
-    flex-direction: column;
-    width: 4%;
-    top: 6px;
-    right: 6px;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
 }
+
 
 .menu-wheel {
     position: absolute;
@@ -370,14 +429,11 @@ const eventHandlers = {
 
 .refresh-btn-icon {
     border-radius: 50%;
-    width: 75%;
+    width: 2rem;
     aspect-ratio: 1/1;
     text-align: center;
     padding: 0;
     color: #C69214;
-    display: fixed;
-    align-items: center;
-    justify-content: center;
     margin: 1px;
     position: relative;
 }

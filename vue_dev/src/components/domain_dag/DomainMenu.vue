@@ -1,15 +1,7 @@
 <script setup>
-import { onMounted, defineProps } from 'vue';
-const props = defineProps(['emit'])
-// const emit = defineEmits([
-//     "deleteConcepts",
-//     "addConcept",
-//     "joinConcepts",
-//     "moduleConceptAdd",
-//     "junctionDelete",
-//     "moduleConceptDelete"
-// ])
-
+import { onMounted, defineProps, defineEmits } from 'vue';
+const props = defineProps(["emit", "selectedConcepts", "selectedEdges", "selectedModule"])
+const menuEmit = defineEmits(['boxSelect'])
 let isOpen = true
 
 function toggleOpen() {
@@ -28,13 +20,19 @@ function toggleOpen() {
             animation.beginElement()
         }
     }
-
 }
+
 onMounted(() => toggleOpen())
 
 function menuClick(event) {
     console.log(event)
-    props.emit(event)
+    if (event !== "boxSelect") {
+        console.log("wrong")
+        props.emit(event)
+    } else {
+        console.log("correct")
+        menuEmit("boxSelect")
+    }
 }
 
 function panelOnClick() {
@@ -72,6 +70,24 @@ function resizeSvg() {
 .menu-btn:active>path {
     fill: #00629b !important;
     box-shadow: 0px 0px 5px 1px black;
+}
+
+#join-concepts {
+    fill: v-bind('props.selectedConcepts.length > 1 ? "#0f8800" : "#4c4c4c"');
+}
+#module-add {
+    fill: v-bind('props.selectedConcepts.length > 0 && props.selectedModule ? "#0f8800" : "#4c4c4c"');
+}
+#delete-concept{
+    fill: v-bind('props.selectedConcepts.length > 0 ? "#970000" : "#4c4c4c"');
+}
+
+#moduleDeleteBtn {
+    fill: v-bind('props.selectedConcepts.length > 0 && props.selectedModule ? "#970000" : "#4c4c4c"');
+}
+
+#delete-junction-btn {
+    fill: v-bind('props.selectedEdges.length > 0 ? "#970000" : "#4c4c4c"');
 }
 </style>
 <template>
@@ -428,7 +444,7 @@ function resizeSvg() {
                 >
                 <title>Delete Selected Concepts</title>
                 <path id="delete-concept"
-                    style="fill:#970000;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1075)"
+                    style=";fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1075)"
                     d="m 19.854688,11.764453 h 5.013671 A 12.398312,12.398311 0 0 0 21.134766,3.60625 l -3.534375,3.534375 a 7.4246187,7.4246182 0 0 1 2.254297,4.623828 z"
                     onclick="" inkscape:label="deleteConceptsBtn" />
                 <g style="display:inline;fill:#ffffff" id="g708" transform="matrix(0.005,0,0,0.005,19.054458,10.876811)"
@@ -468,8 +484,8 @@ function resizeSvg() {
                 @click="menuClick('joinConcepts')"
                 >
                 <title>Join Selected Concepts</title>
-                <path id="path549"
-                    style="fill:#0f8800;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1114)"
+                <path id="join-concepts"
+                    style=";fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1114)"
                     d="M 12.29375,0.10976563 A 12.398312,12.398311 0 0 0 4.1550781,3.3429688 L 7.6699219,6.8578125 A 7.4246187,7.4246182 0 0 1 12.29375,5.0867188 Z"
                     inkscape:label="joinConceptsBtn" onclick="" />
                 <g style="fill:#ffffff;stroke-width:1.1558" id="g710"
@@ -490,8 +506,8 @@ function resizeSvg() {
                 @click="menuClick('moduleConceptAdd')"
                 >
                 <title>Add Selected Concepts To Module</title>
-                <path id="path551"
-                    style="fill:#0f8800;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1131)"
+                <path id="module-add"
+                    style="fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1131)"
                     d="M 7.3871094,7.140625 3.8722656,3.6257813 A 12.398312,12.398311 0 0 0 0.14765625,11.764453 H 5.1328125 A 7.4246187,7.4246182 0 0 1 7.3871094,7.140625 Z"
                     onclick="" inkscape:label="moduleAddBtn" />
                 <g style="fill:#ffffff;fill-opacity:1;stroke-width:1.2717" id="g705"
@@ -505,16 +521,31 @@ function resizeSvg() {
                 <animateMotion class="collapse-out" path="M9.238795325112868,3.826834323650898 0,0" begin="indefinite"
                     dur=".15s" repeatCount="1" fill="freeze" restart="whenNotActive" />
             </g>
-            <!-- <path class="menu-btn" id=""
-                style="display:inline;fill:#4c4c4c;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1143)"
-                d="M 5.0980469,12.164453 H 0.11875 A 12.398312,12.398311 0 0 0 0.0953125,12.49375 12.398312,12.398311 0 0 0 3.3429688,20.832422 L 6.8578125,17.317578 A 7.4246187,7.4246182 0 0 1 5.0691406,12.49375 7.4246187,7.4246182 0 0 1 5.0980469,12.164453 Z"
-                onclick="" inkscape:label="blank1">
+            <g 
+                id="g2"
+                class="menu-btn" 
+                @click="menuClick('boxSelect')"
+            
+            >
+                <path id=""
+                    style="display:inline;fill:#4c4c4c;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1143)"
+                    d="M 5.0980469,12.164453 H 0.11875 A 12.398312,12.398311 0 0 0 0.0953125,12.49375 12.398312,12.398311 0 0 0 3.3429688,20.832422 L 6.8578125,17.317578 A 7.4246187,7.4246182 0 0 1 5.0691406,12.49375 7.4246187,7.4246182 0 0 1 5.0980469,12.164453 Z"
+                    onclick="" inkscape:label="blank1" />
+                <g style="fill:#ffffff;fill-opacity:1" id="g1" transform="matrix(0.005,0,0,0.005,0.98942672,18.32275)">
+                    <path
+                    d="m 680,-120 q -66,0 -113,-47 -47,-47 -47,-113 0,-66 47,-113 47,-47 113,-47 66,0 113,47 47,47 47,113 0,66 -47,113 -47,47 -113,47 z m 0,-80 q 33,0 56.5,-23.5 Q 760,-247 760,-280 760,-313 736.5,-336.5 713,-360 680,-360 q -33,0 -56.5,23.5 -23.5,23.5 -23.5,56.5 0,33 23.5,56.5 23.5,23.5 56.5,23.5 z m -400,-40 q -66,0 -113,-47 -47,-47 -47,-113 0,-66 47,-113 47,-47 113,-47 66,0 113,47 47,47 47,113 0,66 -47,113 -47,47 -113,47 z m 0,-80 q 33,0 56.5,-23.5 Q 360,-367 360,-400 360,-433 336.5,-456.5 313,-480 280,-480 q -33,0 -56.5,23.5 -23.5,23.5 -23.5,56.5 0,33 23.5,56.5 23.5,23.5 56.5,23.5 z m 160,-240 q -66,0 -113,-47 -47,-47 -47,-113 0,-66 47,-113 47,-47 113,-47 66,0 113,47 47,47 47,113 0,66 -47,113 -47,47 -113,47 z m 0,-80 q 33,0 56.5,-23.5 Q 520,-687 520,-720 520,-753 496.5,-776.5 473,-800 440,-800 q -33,0 -56.5,23.5 -23.5,23.5 -23.5,56.5 0,33 23.5,56.5 23.5,23.5 56.5,23.5 z m 240,360 z M 280,-400 Z m 160,-320 z"
+                    id="path1-80" style="fill:#ffffff;fill-opacity:1" />
+                </g>
+                <title>Box Select</title>
                 <animateMotion class="collapse-in" path="M0.0,0.0 9.238795325112868,-3.8268343236508957" begin="indefinite"
                     dur=".15s" repeatCount="1" fill="freeze" restart="whenNotActive" />
                 <animateMotion class="collapse-out" path="M9.238795325112868,-3.8268343236508957 0,0" begin="indefinite"
                     dur=".15s" repeatCount="1" fill="freeze" restart="whenNotActive" />
-            </path>
-            <path class="menu-btn" id=""
+            </g>
+            <path 
+                class="menu-btn" 
+                id=""
+                @click="menuClick('transitiveReduction')"
                 style="display:inline;fill:#4c4c4c;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1175)"
                 d="m 7.140625,17.600391 -3.5148437,3.514843 a 12.398312,12.398311 0 0 0 8.6679687,3.7625 v -4.976953 a 7.4246187,7.4246182 0 0 1 -5.153125,-2.30039 z"
                 onclick="" inkscape:label="blank2">
@@ -522,7 +553,8 @@ function resizeSvg() {
                     dur=".15s" repeatCount="1" fill="freeze" restart="whenNotActive" />
                 <animateMotion class="collapse-out" path="M3.8268343236509,-9.238795325112866 0,0" begin="indefinite"
                     dur=".15s" repeatCount="1" fill="freeze" restart="whenNotActive" />
-            </path> -->
+                <title>Transitive Reduction</title>
+            </path>
             <g 
                 id="g1375" 
                 class="menu-btn" 
@@ -532,7 +564,7 @@ function resizeSvg() {
                 >
                 <title>Delete Selected Junctions</title>
                 <path id="delete-junction-btn"
-                    style="fill:#970000;fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1026)"
+                    style="fill-opacity:1;stroke:#000000;stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1026)"
                     d="M 12.69375,19.900781 V 24.8875 a 12.398312,12.398311 0 0 0 8.687109,-3.752734 l -3.533984,-3.534375 a 7.4246187,7.4246182 0 0 1 -5.153125,2.30039 z"
                     onclick="" inkscape:label="deleteJunctionBtn" />
                 <g style="fill:#ffffff;stroke-width:1.25962" id="g709"
@@ -555,7 +587,7 @@ function resizeSvg() {
                 >
                 <title>Remove Concepts From Module</title>
                 <path id="moduleDeleteBtn"
-                    style="fill:#970000;fill-opacity:1;stroke:url(#pattern568);stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1053)"
+                    style="fill-opacity:1;stroke:url(#pattern568);stroke-width:0.203378;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0;filter:url(#filter1053)"
                     d="m 18.129687,17.317578 3.527344,3.527344 a 12.398312,12.398311 0 0 0 3.235157,-8.351172 12.398312,12.398311 0 0 0 -0.0082,-0.329297 h -4.994531 a 7.4246187,7.4246182 0 0 1 0.02891,0.329297 7.4246187,7.4246182 0 0 1 -1.788672,4.823828 z"
                     onclick="" inkscape:label="moduleDeleteBtn" />
                 <g style="fill:#ffffff;stroke-width:1.20212" id="g707"

@@ -15,11 +15,6 @@ watch(props.selectedConcepts, (newVal) => {
         <hr style="width: 100%; border-color: var(--gold-line-color);"/>
         <div class="module-header">
             <p class="roboto-bold">Module Concepts:</p>
-            <div class="icon-box">
-                <img class="module-icon" src="/static/assets/icon-add.png"/>
-                <img class="module-icon" src="/static/assets/delete.png"/>
-            </div>
-
         </div>
         <ListboxRoot
             class="list-root"
@@ -61,12 +56,6 @@ p {
     justify-content: space-between;
     height: 2rem;
     padding-bottom: 0.5rem;
-}
-
-.icon-box {
-    height: 100%;
-    display: flex;
-    align-items: center;
 }
 
 .module-icon {
