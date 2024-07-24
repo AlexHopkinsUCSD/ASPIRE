@@ -28,7 +28,7 @@ function submit() {
                 <input id="concept-name" :value="conceptForm.name" @input="event => {
                     conceptForm.name = event.target.value
                     conceptForm.id = event.target.value
-                    conceptForm.module = null
+                    conceptForm.module = []
                     
                     }"/>
             </form>

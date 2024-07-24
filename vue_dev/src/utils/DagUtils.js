@@ -2,8 +2,8 @@ import { reactive, ref } from "vue";
 
 export default class DomainDagUtilities {
     constructor(initialNodes={}, initialEdges={}) {
-        this.nodes = reactive(initialNodes)
-        this.edges = reactive(initialEdges)
+        this.nodes = ref(initialNodes)
+        this.edges = ref(initialEdges)
         this.focusNode = ref()
         this.selectedNodes = ref([])
         this.selectedEdges = ref([])
@@ -14,12 +14,20 @@ export default class DomainDagUtilities {
         this.settings = reactive({})
     }
 
+    uploadDomain = (domainJson) => {
+        console.log(domainJson)
+        this.nodes.value = domainJson.nodes
+        this.edges.value = domainJson.edges
+        this.changeHistory = []
+        this.historyIndex = -1
+    }
+
     saveDomain = () => {
         this.saving.value = true
 
         const date = new Date().toDateString()
         const fileName = `domain_model_${date}.json`
-        const currentDomain = {"nodes": this.nodes, "edges": this.edges}
+        const currentDomain = {"nodes": this.nodes.value, "edges": this.edges.value}
 
         const blob = new Blob([JSON.stringify(currentDomain)], {type: "text/plain"})
         const downloadURL = window.URL.createObjectURL(blob);
@@ -115,7 +123,7 @@ export default class DomainDagUtilities {
     }
 
     addNode = (node, isFromHistory=false) => {
-        this.nodes[node.id] = {name: node.name, id: node.id, module: node.module, params: {focusColor:"#4cff30"}}
+        this.nodes.value[node.id] = {name: node.name, id: node.id, module: node.module, params: {focusColor:"#4cff30"}}
         this.focusNode.value = node.id
         if (!isFromHistory) {
             this.updateChangeHistory({object: "node", action: "add", value: node})
@@ -124,10 +132,10 @@ export default class DomainDagUtilities {
 
     deleteNode = (nodeId, isFromHistory=false) => {
         if (!isFromHistory) {
-            const node = this.nodes[nodeId]
+            const node = this.nodes.value[nodeId]
             this.updateChangeHistory({object: "node", action: "delete", value: node})
         }
-        delete this.nodes[nodeId]
+        delete this.nodes.value[nodeId]
     }
 
     deleteSelectedNodes = () => {
@@ -135,28 +143,28 @@ export default class DomainDagUtilities {
             // We delete the edges first so the node deletion is at the end of the change history.
             // This ensures if a user decides to undo this action, the node returns first, then each edge after every subsequent undo action.
             this.deleteAllNodeEdges(nodeId)
-            const node = this.nodes[nodeId]
-            delete this.nodes[nodeId]
+            const node = this.nodes.value[nodeId]
+            delete this.nodes.value[nodeId]
             this.updateChangeHistory({object: "node", action: "delete", value: node})
         }
     }
 
     updateNodes = (node, is_param, key, value) => {
-        if (!this.nodes[node]) {
+        if (!this.nodes.value[node]) {
         return
         }
         if (is_param) {
-        this.nodes[node].params[key] = value
+        this.nodes.value[node].params[key] = value
         } else {
-        this.nodes[node][key] = value
+        this.nodes.value[node][key] = value
         }
     }
 
     addEdge = (edge, isFromHistory=false) => {
         const newEdgeId = `edge-${edge.target}-${edge.source}`
         // const edgeValues = Object.keys(this.edges)
-        if (!this.edges[newEdgeId]) {
-            this.edges[newEdgeId] = edge
+        if (!this.edges.value[newEdgeId]) {
+            this.edges.value[newEdgeId] = edge
         }
         if (!isFromHistory) {
             this.updateChangeHistory({object: "edge", action: "add", value: edge})
@@ -164,12 +172,12 @@ export default class DomainDagUtilities {
     }
 
     addSelectedEdges = () => {
-        const edgeValues = Object.values(this.edges)
+        const edgeValues = Object.values(this.edges.value)
         for (let node in this.selectedNodes.value) {
             const newEdge = {source: this.selectedNodes.value[node], target: this.focusNode.value,}
             // checks if the new edge already exists and that the new edge doesn't contain nodes linked to themselves
             if (!edgeValues.some(node => JSON.stringify(node) === JSON.stringify(newEdge)) && newEdge.source !== newEdge.target) {
-                this.edges[`edge-${newEdge.target}-${newEdge.source}`] = newEdge
+                this.edges.value[`edge-${newEdge.target}-${newEdge.source}`] = newEdge
                 this.updateChangeHistory({object: "edge", action: "add", value: newEdge})
             }
         }
@@ -177,15 +185,15 @@ export default class DomainDagUtilities {
 
     deleteEdge = (edgeId, isFromHistory=false) => {
         if (!isFromHistory) {
-            this.updateChangeHistory({object: "edge", action: "delete", value: this.edges[edgeId]})
+            this.updateChangeHistory({object: "edge", action: "delete", value: this.edges.value[edgeId]})
         }
-        delete this.edges[edgeId]
+        delete this.edges.value[edgeId]
     }
 
     deleteSelectedEdges = () => {
         for (let edgeId of this.selectedEdges.value) {
-            this.updateChangeHistory({object: "edge", action: "delete", value: this.edges[edgeId]})
-            delete this.edges[edgeId]
+            this.updateChangeHistory({object: "edge", action: "delete", value: this.edges.value[edgeId]})
+            delete this.edges.value[edgeId]
         }
         this.selectedEdges.value = []
     }
@@ -193,10 +201,10 @@ export default class DomainDagUtilities {
     deleteAllNodeEdges = (nodeId) => {
         // creates a list of edge ids containing the id of the node being deleted
         // edge id must be formatted as 'edge-{source node id}-{target node id}' for the split and filter statement to work properly
-        const validEdgeIds = Object.keys(this.edges).filter(key => key.split("-").includes(nodeId))
+        const validEdgeIds = Object.keys(this.edges.value).filter(key => key.split("-").includes(nodeId))
         for (let edgeId of validEdgeIds) {
-            this.updateChangeHistory({object: "edge", action: "delete", value: this.edges[edgeId]})
-            delete this.edges[edgeId]
+            this.updateChangeHistory({object: "edge", action: "delete", value: this.edges.value[edgeId]})
+            delete this.edges.value[edgeId]
         }
     }
 
@@ -237,7 +245,7 @@ export default class DomainDagUtilities {
 
     addNodesToModule = (nodes, module, isFromHistory=false) => {
         for (let node of nodes) {
-            this.nodes[node].module.push(module)
+            this.nodes.value[node].module.push(module)
         }
         if (!isFromHistory) {
             this.updateChangeHistory({object: "nodeToModule", action: "add", value: {nodeIds: nodes, module: module}})
@@ -247,15 +255,15 @@ export default class DomainDagUtilities {
     addSelectedNodesToModule = () => {
         const newModule = this.selectedModule.value
         for (let node of this.selectedNodes.value) {
-            this.nodes[node].module.push(newModule)
+            this.nodes.value[node].module.push(newModule)
         }
         this.updateChangeHistory({object: "nodeToModule", action: "add", value: {nodeIds: this.selectedNodes.value, module: newModule}})
     }
 
     RemoveNodesFromModule = (nodes, module, isFromHistory=false) => {
         for (let node of nodes) {
-            const updatedModules = this.nodes[node].module.filter(oldModule => oldModule !== module)
-            this.nodes[node].module = updatedModules
+            const updatedModules = this.nodes.value[node].module.filter(oldModule => oldModule !== module)
+            this.nodes.value[node].module = updatedModules
         }
         if (!isFromHistory) {
             this.updateChangeHistory({object: "nodeToModule", action: "delete", value: {nodeIds: nodes, module: module}})
@@ -265,8 +273,8 @@ export default class DomainDagUtilities {
     RemoveSelectedNodesFromModule = () => {
         const newModule = this.selectedModule.value
         for (let node of this.selectedNodes.value) {
-            const updatedModules = this.nodes[node].module.filter(oldModule => oldModule !== newModule)
-            this.nodes[node].module = updatedModules
+            const updatedModules = this.nodes.value[node].module.filter(oldModule => oldModule !== newModule)
+            this.nodes.value[node].module = updatedModules
         }
         this.updateChangeHistory({object: "nodeToModule", action: "delete", value: {nodeIds: this.selectedNodes.value, module: newModule}})
         
@@ -313,7 +321,7 @@ export default class DomainDagUtilities {
     }
     
     transitiveReduction = () => {
-        const edges = this.edges
+        const edges = this.edges.value
         const adjacencyList = this._buildAdjacencyList(edges);
         const reachableMap = this._findAllReachable(adjacencyList);
         // const reducedEdges = {};

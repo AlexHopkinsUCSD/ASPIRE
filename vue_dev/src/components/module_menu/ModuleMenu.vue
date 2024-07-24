@@ -4,7 +4,7 @@ import { AccordionContent, AccordionHeader, AccordionItem, AccordionRoot, Accord
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps(["modules", "concepts", "selectedConcepts"])
-const emit = defineEmits(["updateSelectedModule", "updateSelectedNodes", "saveDomain"])
+const emit = defineEmits(["updateSelectedModule", "updateSelectedNodes", "saveDomain", "addFile"])
 
 const accordionItems = [
 {
@@ -26,6 +26,17 @@ const accordionItems = [
 
 function moduleSelected(moduleId) {
     emit("updateSelectedModule", moduleId)
+}
+
+const handleFileChange = (event) => {
+    var jsonReader = new FileReader
+    jsonReader.onload = onReaderLoad
+    jsonReader.readAsText(event.target.files[0])
+};
+
+const onReaderLoad = (event) => {
+    var obj = JSON.parse(event.target.result);
+    emit("addFile", obj)
 }
 
 </script>
@@ -68,6 +79,10 @@ function moduleSelected(moduleId) {
     </AccordionRoot>
     <div class="save-tools">
         <img @click="emit('saveDomain')" class="domain-save-btn" src="/static/assets/icon-save.png"/>
+        <div class="file-upload">
+            <!-- <label for="content_files">Content Files: <span class="required" title="This field is required">*</span></label> -->
+            <input type="file" id="content_files" @change="handleFileChange" accept=".json"/>
+        </div>
     </div>
 </template>
 
@@ -185,6 +200,9 @@ to {
 
 .save-tools {
     height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .domain-save-btn {
     border-radius: 1rem;

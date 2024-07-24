@@ -643,8 +643,8 @@ const isMenuOpen = ref(false)
             </div>
             <div class="graph roboto-bold">
                 <DomainDag 
-                    :nodes="dagUtil.nodes" 
-                    :edges="dagUtil.edges" 
+                    :nodes="dagUtil.nodes.value" 
+                    :edges="dagUtil.edges.value" 
                     :focus-node="dagUtil.focusNode.value"
                     :selectedNodes="dagUtil.selectedNodes.value" 
                     :selectedModule="dagUtil.selectedModule.value"
@@ -668,9 +668,14 @@ const isMenuOpen = ref(false)
             <NewConceptModal @add-node="dagUtil.addNode" @update-open="val => modalOpen = val" :modal-open="modalOpen" />
         </div>
         <div class="right-section" :data-state="isMenuOpen ? 'max' : 'min'">
-            <ModuleMenu :concepts="dagUtil.nodes" :selected-concepts="dagUtil.selectedNodes"
-                @update-selected-module="dagUtil.updateSelectedModule" @update-selected-nodes="dagUtil.updateSelectedNodes"
-                @save-domain="dagUtil.saveDomain" />
+            <ModuleMenu 
+                :concepts="dagUtil.nodes.value" 
+                :selected-concepts="dagUtil.selectedNodes"
+                @update-selected-module="dagUtil.updateSelectedModule" 
+                @update-selected-nodes="dagUtil.updateSelectedNodes"
+                @save-domain="dagUtil.saveDomain" 
+                @add-file="dagUtil.uploadDomain"
+                />
         </div>
         <div v-if="dagUtil.saving.value" class="save-overlay">
         </div>
@@ -787,6 +792,9 @@ const isMenuOpen = ref(false)
 
 .right-section[data-state='min'] {
     width: 0%;
+    margin-left: 0px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     visibility: collapse;
     animation: slide-in-menu 1s ease-out;
 }

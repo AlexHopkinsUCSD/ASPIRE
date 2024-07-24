@@ -71,7 +71,6 @@ function getColor(node, mode = "node") {
 }
 
 function tempGetEdgeColor(edge) {
-    console.log(edge)
     if (props.selectedEdges.includes(`edge-${edge.source}-${edge.target}`)) {
         return "#dd8800"
     } else {
