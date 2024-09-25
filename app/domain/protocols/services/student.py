@@ -9,6 +9,9 @@ class StudentService(Protocol):
         Adds a new student to the db
         """
         pass
+
+    async def get_student(self, canvas_id: str) -> StudentRead:
+        ...
     
     async def add_student_to_course(self, student_id: int, course_id: int) -> StudentToCourseRead:
         """

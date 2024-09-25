@@ -1,11 +1,11 @@
 from typing import Literal, Any, Union
-from .cache_models import Session, Nonce
+from ..models.cache_models import Session, Nonce
 
 class DataStore:
     def __init__(self):
         self._data = {}
 
-    def append(self, value: Union[Session, Nonce]) -> bool:
+    async def append(self, value: Union[Session, Nonce]) -> bool:
         """
         Adds item to data store and returns True if primary key of Session/Nonce obj is unique, else returns False
         """
@@ -22,7 +22,6 @@ class DataStore:
         """
         updates attributes of item at key
         """
-        print(self._data)
         item = self[key]
         return item.update(**value) if item else item
     

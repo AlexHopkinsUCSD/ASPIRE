@@ -1,457 +1,459 @@
 <template>
   <div class="home-page-wrapper">
-    <div v-if="loadingCompleted" class="home-page">
-      <!-- Empty Home Page Content -->
-      <p>Welcome to the Home Page!
-        <br>
-        If you are seeing this message, it means the endpoint has spit out some data.
-      </p>
-    </div>
-    <div :class="{'home-page': true, 'blurred': isLoading}">
-      <div v-if="showInitialScreen" class="initial-screen">
-        <div class="option create-course" @click="selectOption('create')">
-          <p>Create New Course</p>
-        </div>
-        <div class="option existing-course" @click="selectOption('existing')">
-          <p>Use Existing Course</p>
-        </div>
+    <div class="container">
+      <div v-if="loadingCompleted" class="home-page">
+        <p>Welcome to the Home Page!
+          <br>
+          If you are seeing this message, it means the endpoint has spit out some data.
+        </p>
       </div>
-      <div v-else class="form-container">
-        <div v-if="isNewCourse" class="left-half">
-          <div class="course-details">
-            <!-- Existing course details code -->
-            <div class="input-box">
-              <label>Course Name:</label>
-              <input type="text" v-model="courseName" @input="fetchCourses" @focus="showAllCourses" @blur="hideCourseSuggestions">
-              <ul v-if="showCourseSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredCourses" :key="index" @mousedown="selectCourse(suggestion)">
-                  {{ suggestion }}
-                </li>
-              </ul>
-            </div>
-            <div class="input-box">
-              <label>Instructor: <img src="/static/assets/search-bar.png" class="search-bar-inst"></label>
-              <input type="text" v-model="instructor" @input="fetchInstructors" @focus="showAllInstructors" @blur="hideInstructorSuggestions">
-              <ul v-if="showInstructorSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredInstructors" :key="index" @mousedown="selectInstructor(suggestion)">
-                  {{ suggestion }}
-                </li>
-              </ul>
-            </div>
-            <div class="input-box">
-              <label>Quarter:</label>
-              <div class="quarter-inputs">
-                <select v-model="quarter">
-                  <option>Fall</option>
-                  <option>Winter</option>
-                  <option>Spring</option>
-                  <option>Summer Session I</option>
-                  <option>Summer Session II</option>
-                </select>
-                <input type="number" v-model="year" min="2000" max="3000" class="quarter-inp">
+      <div :class="{'home-page': true, 'blurred': isLoading}">
+        <div v-if="showInitialScreen" class="initial-screen">
+          <div class="option create-course" @click="selectOption('create')">
+            <p>Create New Course</p>
+          </div>
+          <div class="option existing-course" @click="selectOption('existing')">
+            <p>Use Existing Course</p>
+          </div>
+        </div>
+        <div v-else class="form-container">
+          <div class="left-half">
+            <div v-if="isNewCourse">
+              <h2>Create New Course</h2>
+              <div class="course-details">
+                <div class="input-box">
+                  <label>Course Name:</label>
+                  <input type="text" v-model="courseName">
+                </div>
+                <div class="input-box">
+                  <label>Instructor: <img src="/static/assets/search-bar.png" class="search-bar-inst"></label>
+                  <input type="text" v-model="instructor" @input="fetchInstructors" @focus="showAllInstructors" @blur="hideInstructorSuggestions">
+                  <ul v-if="showInstructorSuggestions" class="suggestions-list" @mousedown.prevent>
+                    <li v-for="(suggestion, index) in filteredInstructors" :key="index" @mousedown="selectInstructor(suggestion)">
+                      {{ suggestion }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="input-box">
+                  <label>Quarter:</label>
+                  <div class="quarter-inputs">
+                    <select v-model="quarter">
+                      <option>Fall</option>
+                      <option>Winter</option>
+                      <option>Spring</option>
+                      <option>Summer Session I</option>
+                      <option>Summer Session II</option>
+                    </select>
+                    <input type="number" v-model="year" min="2000" max="3000" class="quarter-inp">
+                  </div>
+                </div>
+                <div class="input-box">
+                  <label>Subject: <img src="/static/assets/search-bar.png" class="search-bar-subj"></label>
+                  <input type="text" v-model="subject" @input="fetchSubjects" @focus="showAllSubjects" @blur="hideSubjectSuggestions">
+                  <ul v-if="showSubjectSuggestions" class="suggestions-list" @mousedown.prevent>
+                    <li v-for="(suggestion, index) in filteredSubjects" :key="index" @mousedown="selectSubject(suggestion)">
+                      {{ suggestion }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="input-box file-upload">
+                  <label for="file-upload" class="file-upload-label">
+                    Click to Upload files <img src="/static/assets/upload-file.png" class="upload-file-icon">
+                  </label>
+                  <input type="file" id="file-upload" multiple @change="handleFilesUpload">
+                  <ul>
+                    <li v-for="(file, index) in files" :key="file.name">
+                      {{ file.name }}
+                      <button @click="removeFile(index)">
+                        <img src="/static/assets/delete.png" class="delete-icon">
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <div class="input-box fixed-input">
+                  <label>Difficulty:</label>
+                  <input type="number" v-model="difficulty" min="1" max="5">
+                </div>
               </div>
             </div>
-            <div class="input-box">
-              <label>Subject: <img src="/static/assets/search-bar.png" class="search-bar-subj"></label>
-              <input type="text" v-model="subject" @input="fetchSubjects" @focus="showAllSubjects" @blur="hideSubjectSuggestions">
-              <ul v-if="showSubjectSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredSubjects" :key="index" @mousedown="selectSubject(suggestion)">
-                  {{ suggestion }}
-                </li>
-              </ul>
-            </div>
-            <div class="input-box file-upload">
-              <label for="file-upload" class="file-upload-label">
-                Click to Upload files <img src="/static/assets/upload-file.png" class="upload-file-icon">
-              </label>
-              <input type="file" id="file-upload" multiple @change="handleFilesUpload">
-              <ul>
-                <li v-for="(file, index) in files" :key="file.name">
-                  {{ file.name }}
-                  <button @click="removeFile(index)">
-                    <img src="/static/assets/delete.png" class="delete-icon">
-                  </button>            
-                </li>
-              </ul>
-            </div>
-            <div class="input-box fixed-input">
-              <label>Difficulty:</label>
-              <input type="number" v-model="difficulty" min="1" max="5">
-            </div>
-          </div>
-          <div class="submit-button">
-            <button @click="submitForm">Submit</button>
-          </div>
-        </div>
-        <div v-else class="left-half">
-          <div class="existing-course-details">
-            <!-- Existing course details code -->
-            <div class="input-box">
-              <label>Course:</label>
-              <input type="text" v-model="existingCourse" @input="fetchExistingCourses" @focus="showAllExistingCourses" @blur="hideExistingCourseSuggestions">
-              <ul v-if="showExistingCourseSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredExistingCourses" :key="index" @mousedown="selectExistingCourse(suggestion)">
-                  {{ suggestion }}
-                </li>
-              </ul>
-            </div>
-            <div class="input-box">
-              <label>Instructor: <img src="/static/assets/search-bar.png" class="search-bar-inst"></label>
-              <input type="text" v-model="instructor" @input="fetchInstructors" @focus="showAllInstructors" @blur="hideInstructorSuggestions">
-              <ul v-if="showInstructorSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredInstructors" :key="index" @mousedown="selectInstructor(suggestion)">
-                  {{ suggestion }}
-                </li>
-              </ul>
-            </div>
-            <div class="input-box">
-              <label>Quarter:</label>
-              <div class="quarter-inputs">
-                <select v-model="quarter">
-                  <option>Fall</option>
-                  <option>Winter</option>
-                  <option>Spring</option>
-                  <option>Summer Session I</option>
-                  <option>Summer Session II</option>
+            <div v-else>
+              <h2>Use Existing Course</h2>
+              <p>Please enter at least one of the following to search for an existing course</p>
+              <div class="existing-course-details">
+                <div class="input-box">
+                  <label>Instructor: <img src="/static/assets/search-bar.png" class="search-bar-inst"></label>
+                  <input type="text" v-model="instructor" @input="fetchInstructors" @focus="showAllInstructors" @blur="hideInstructorSuggestions">
+                  <ul v-if="showInstructorSuggestions" class="suggestions-list" @mousedown.prevent>
+                    <li v-for="(suggestion, index) in filteredInstructors" :key="index" @mousedown="selectInstructor(suggestion)">
+                      {{ suggestion }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="input-box">
+                  <label>Quarter:</label>
+                  <div class="quarter-inputs">
+                    <select v-model="quarter">
+                      <option>Fall</option>
+                      <option>Winter</option>
+                      <option>Spring</option>
+                      <option>Summer Session I</option>
+                      <option>Summer Session II</option>
+                    </select>
+                    <input type="number" v-model="year" min="2000" max="3000" class="quarter-inp">
+                  </div>
+                </div>
+                <div class="input-box">
+                  <label>Quarter Filter:</label>
+                  <select v-model="quarterFilter">
+                    <option value="">--</option>
+                    <option value="equal">Equal</option>
+                    <option value="newer">Newer</option>
+                    <option value="older">Older</option>
+                    <option value="newer_inclusive">Newer Inclusive</option>
+                    <option value="older_inclusive">Older Inclusive</option>
+                  </select>
+                </div>
+                <div class="input-box">
+                  <label>Subject: <img src="/static/assets/search-bar.png" class="search-bar-subj"></label>
+                  <input type="text" v-model="subject" @input="fetchSubjects" @focus="showAllSubjects" @blur="hideSubjectSuggestions">
+                  <ul v-if="showSubjectSuggestions" class="suggestions-list" @mousedown.prevent>
+                    <li v-for="(suggestion, index) in filteredSubjects" :key="index" @mousedown="selectSubject(suggestion)">
+                      {{ suggestion }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="input-box fixed-input">
+                  <label>Difficulty:</label>
+                  <input type="number" v-model="difficulty" min="1" max="5">
+                </div>
+              </div>
+              <div class="search-container">
+                <button class="button" @click="searchCourses">Search</button>
+              </div>
+              <p>Please select a course to view the course summary</p>
+              <div class="input-box">
+                <label>Course:</label>
+                <select v-model="selectedCourse">
+                  <option v-for="course in courses" :key="course.course_id" :value="course">{{ course.name }}</option>
                 </select>
-                <input type="number" v-model="year" min="2000" max="3000" class="quarter-inp">
               </div>
             </div>
-            <div class="input-box">
-              <label>Subject: <img src="/static/assets/search-bar.png" class="search-bar-subj"></label>
-              <input type="text" v-model="subject" @input="fetchSubjects" @focus="showAllSubjects" @blur="hideSubjectSuggestions">
-              <ul v-if="showSubjectSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredSubjects" :key="index" @mousedown="selectSubject(suggestion)">
-                  {{ suggestion }}
-                </li>
-              </ul>
-            </div>
-            <div class="input-box">
-              <label>Course Template: <img src="/static/assets/search-bar.png" class="search-bar-template"></label>
-              <input type="text" v-model="template" @input="fetchTemplates" @focus="showAllTemplates" @blur="hideTemplateSuggestions">
-              <ul v-if="showTemplateSuggestions" class="suggestions-list" @mousedown.prevent>
-                <li v-for="(suggestion, index) in filteredTemplates" :key="index" @mousedown="selectedTemplate(suggestion)">
-                  {{ suggestion.name }}
-                  <p>{{ suggestion.content }}</p>
-                </li>
-              </ul>
-            </div>
-            <div class="input-box fixed-input">
-              <label>Difficulty:</label>
-              <input type="number" v-model="difficulty" min="1" max="5">
-            </div>
           </div>
-          <div class="submit-button">
-            <button @click="submitExistingCourseForm">Submit</button>
-          </div>
-        </div>
-        <div class="right-half">
-          <div class="tutorial-section">
-            <div class="center-text">
-              <p>How To Upload a File</p>
+          <div class="right-half">
+            <div v-if="!isNewCourse && selectedCourse">
+              <div class="summary-box">
+                <label>Course Summary:</label>
+                <div class="course-summary-box">
+                  <p>{{ selectedCourse?.course_summary }}</p>
+                </div>
+              </div>
+              <AccordionRoot
+                class="module-accordion-container"
+                type="single"
+                :collapsible="true"
+                @update:model-value="moduleSelected"
+              >
+                <h3 class="roboto-bold">Modules</h3>
+                <template v-for="module in modules" :key="module.module_id">
+                  <AccordionItem class="module-accordion-item roboto-regular" :value="module.module_id">
+                    <AccordionHeader class="module-accordion-header">
+                      <AccordionTrigger class="module-accordion-trigger roboto-bold">
+                        <span>{{ module.title }}</span>
+                        <img src="/static/assets/icon-chevron.png" class="dropdown-btn-icon" />
+                      </AccordionTrigger>
+                    </AccordionHeader>
+                    <AccordionContent class="module-accordion-content">
+                      <ModuleMenuItems :module-summary="module.content_summary" />
+                      <!-- <p>{{ module.content_summary }}</p> -->
+                      <ol>
+                        <li v-for="concept in concepts[module.module_id]" :key="concept.name">{{ concept.name }}</li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+                </template>
+              </AccordionRoot>
+              <div class="submit-container">
+                <button class="button" @click="submitExistingCourseForm">Submit</button>
+              </div>
             </div>
-            <div class="tutorial-gif">
-              <img :src="gifSrc" class="gif" @mouseover="startGif" @mouseout="stopGif">        
-            </div>
-            <textarea v-text="explanation" readonly></textarea>      
           </div>
         </div>
       </div>
-    </div>
-    <div v-if="isLoading" class="loading-overlay">
-      <img src="/static/assets/loading-icon.png" class="loading-icon">
-      <p>Loading...</p>
+      <div v-if="isLoading" class="loading-overlay">
+        <img src="/static/assets/loading-icon.png" class="loading-icon">
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 </template>
 
-
 <script setup>
+import ModuleMenuItems from './module_menu/ModuleMenuItems.vue';
+import { AccordionRoot, AccordionItem, AccordionHeader, AccordionTrigger, AccordionContent } from 'radix-vue';
+import { ref, computed, watch } from 'vue';
 import axios from 'axios';
+
+const showInitialScreen = ref(true);
+const isNewCourse = ref(false);
+const courseName = ref('');
+const quarter = ref('Fall');
+const year = ref(2024);
+const isLoading = ref(false);
+const loadingCompleted = ref(false);
+const instructor = ref('');
+const subject = ref('CSS-1');
+const difficulty = ref('');
+const files = ref([]);
+const instructors = ref(['Umberto Mignozzetti']);
+const courses = ref([]); // Property to store courses
+const selectedCourse = ref(null); // Property to store selected course
+const modules = ref([]); // Property to store modules
+const concepts = ref({});
+
+const showInstructorSuggestions = ref(false);
+const showSubjectSuggestions = ref(false);
+const quarterFilter = ref('equal'); // Set default to "equal"
+
+const filteredInstructors = computed(() => {
+  if (instructor.value === '') {
+    return instructors.value;
+  }
+  const searchTerm = instructor.value.toLowerCase();
+  return instructors.value.filter(instr => {
+    const nameParts = instr.toLowerCase().split(' ');
+    return nameParts.some(part => part.startsWith(searchTerm));
+  });
+});
+
+const fetchInstructors = () => {
+  showInstructorSuggestions.value = filteredInstructors.value.length > 0;
+};
+
+const showAllInstructors = () => {
+  showInstructorSuggestions.value = instructors.value.length > 0;
+};
+
+const fetchConcepts = async (moduleId) => {
+  if (!concepts.value[moduleId]) {
+    try {
+      const response = await axios.get(`http://localhost:8080/concept/cm/${moduleId}`);
+      concepts.value[moduleId] = response.data.concepts;
+    } catch (error) {
+      console.error('Failed to fetch concepts:', error);
+    }
+  }
+};
+
+const hideInstructorSuggestions = () => {
+  setTimeout(() => {
+    showInstructorSuggestions.value = false;
+  }, 200);
+};
+
+const selectInstructor = (selectedInstructor) => {
+  instructor.value = selectedInstructor;
+  showInstructorSuggestions.value = false;
+};
+
+const searchCourses = async () => {
+  const quarterToMonthMapping = {
+    'Fall': '09',
+    'Winter': '01',
+    'Spring': '04',
+    'Summer Session I': '07',
+    'Summer Session II': '08',
+  };
+  const month = quarterToMonthMapping[quarter.value];
+  const date = `${year.value}-${month}-01`;
+
+  const filterParams = {
+    name: courseName.value,
+    instructor: instructor.value,
+    quarter: date,
+    quarter_filter: quarterFilter.value,
+    subject: subject.value,
+    difficulty: difficulty.value
+  };
+
+
+  const handleAccordionClick = (moduleId) => {
+  fetchConcepts(moduleId);
+};
+
+  const filteredParams = {};
+  Object.keys(filterParams).forEach(key => {
+    if (filterParams[key]) {
+      filteredParams[key] = filterParams[key];
+    }
+  });
+
+  const queryParams = new URLSearchParams(filteredParams).toString();
+  const requestUrl = `http://localhost:8080/course/filter/{course_filter}?${queryParams}`;
+
+  try {
+    const response = await axios.get(requestUrl);
+    console.log("Courses fetched:", response.data);
+    courses.value = response.data;
+  } catch (error) {
+    console.error('Error filtering courses:', error);
+  }
+};
+
+const handleFilesUpload = (event) => {
+  const uploadedFiles = Array.from(event.target.files);
+  files.value = [...files.value, ...uploadedFiles];
+};
+
+const removeFile = (index) => {
+  files.value.splice(index, 1);
+};
+
+const fetchModules = async (courseId) => {
+  const url = `http://localhost:8080/module/get/${courseId}/course`;
+  try {
+    const response = await axios.get(url);
+    modules.value = response.data;
+  } catch (error) {
+    console.error('Error fetching modules:', error);
+  }
+};
+
+// Watch for changes in selectedCourse to fetch modules
+watch(selectedCourse, async (newVal) => {
+  if (newVal && newVal.course_id) {
+    await fetchModules(newVal.course_id);
+    // Optionally fetch concepts for the first module immediately
+    if (modules.value.length > 0) {
+      fetchConcepts(modules.value[0].module_id);
+    }
+  }
+});
+
+function moduleSelected(moduleId) {
+  console.log("Module selected:", moduleId);
+  // Additional logic for selecting a module can be added here
+}
+
+const selectOption = (option) => {
+  showInitialScreen.value = false;
+  isNewCourse.value = option === 'create';
+};
 </script>
 
 <script>
 export default {
-  name: 'HomePage',
-  icon: '/static/assets/icon-HomePage.png',
-  data() {
-    return {
-      showInitialScreen: true,
-      isNewCourse: false,
-      courseName: '',
-      quarter: 'Fall',
-      year: 2024,
-      isLoading: false,
-      loadingCompleted: false, // New flag for loading completion
-      instructor: '',
-      subject: '',
-      template: '',
-      difficulty: '1',
-      files: [],
-      explanation: 'Insert Explanatory Text Here',
-      instructors: ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Brown'],
-      courses: ['Math 101', 'Physics 202', 'Chemistry 303', 'Biology 404'],
-      subjects: ['Mathematics', 'Physics', 'Chemistry', 'Biology'],
-      templates: [
-        { name: 'Template 1', content: 'Content for Template 1' },
-        { name: 'Template 2', content: 'Content for Template 2' },
-        { name: 'Template 3', content: 'Content for Template 3' },
-        { name: 'Template 4', content: 'Content for Template 4' },
-      ],
-      showInstructorSuggestions: false,
-      showCourseSuggestions: false,
-      showSubjectSuggestions: false,
-      showTemplateSuggestions: false,
-      gifSrc: '/static/assets/rick-roll.png',
-      existingCourse: '',
-      existingQuarter: 'Fall',
-      existingYear: 2024,
-      showExistingCourseSuggestions: false,
-      existingCourses: ['Math 101', 'Physics 202', 'Chemistry 303', 'Biology 404'],
-      selectedTemplate: null,
-    };
-  },
-  computed: {
-    filteredInstructors() {
-      if (this.instructor === '') {
-        return this.instructors;
-      }
-      const searchTerm = this.instructor.toLowerCase();
-      return this.instructors.filter(instructor => {
-        const nameParts = instructor.toLowerCase().split(' ');
-        return nameParts.some(part => part.startsWith(searchTerm));
-      });
-    },
-    filteredCourses() {
-      if (this.courseName === '') {
-        return this.courses;
-      }
-      const searchTerm = this.courseName.toLowerCase();
-      return this.courses.filter(course => {
-        const nameParts = course.toLowerCase().split(' ');
-        return nameParts.some(part => part.startsWith(searchTerm));
-      });
-    },
-    filteredSubjects() {
-      if (this.subject === '') {
-        return this.subjects;
-      }
-      const searchTerm = this.subject.toLowerCase();
-      return this.subjects.filter(subject => {
-        const nameParts = subject.toLowerCase().split(' ');
-        return nameParts.some(part => part.startsWith(searchTerm));
-      });
-    },
-    filteredTemplates() {
-      if (this.templates === '') {
-        return this.templates;
-      }
-      const searchTerm = this.template.toLowerCase();
-      return this.templates.filter(template => {
-        const nameParts = template.name.toLowerCase().split(' ');
-        return nameParts.some(part => part.startsWith(searchTerm));
-      });
-    },
-    filteredExistingCourses() {
-      if (this.existingCourse === '') {
-        return this.existingCourses;
-      }
-      const searchTerm = this.existingCourse.toLowerCase();
-      return this.existingCourses.filter(course => {
-        const nameParts = course.toLowerCase().split(' ');
-        return nameParts.some(part => part.startsWith(searchTerm));
-      });
-    },
-  },
-  methods: {
-    async submitForm() {
-      this.isLoading = true;
-      const formData = new FormData();
-      const quarterToMonthMapping = {
-        'Fall': '09',
-        'Winter': '01',
-        'Spring': '04',
-        'Summer Session I': '07',
-        'Summer Session II': '08',
-      };
-      const month = quarterToMonthMapping[this.quarter];
-      const date = `${this.year}-${month}-01`;
-      formData.append('quarter', date);
-      formData.append('courseName', this.courseName);
-      formData.append('instructor', this.instructor);
-      formData.append('subject', this.subject);
-      formData.append('template', this.template);
-      formData.append('difficulty', this.difficulty);
-      formData.append('domain_id', '');
-      formData.append('name', '');
-      this.files.forEach(file => {
-        formData.append('content_files', file);
-      });
-
-      // Log formData entries
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-      try {
-        const response = await axios.post(`http://localhost:8080/qas/register?model_name=gpt-3.5-turbo`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        console.log('Form submitted successfully:', response.data);
-      } catch (error) {
-        console.error('Error submitting form:', error);
-      } finally {
-        this.isLoading = false;
-        this.loadingCompleted = true; // Set loadingCompleted to true
-      }
-    },
-    async submitExistingCourseForm() {
-      const formData = new FormData();
-      const quarterToMonthMapping = {
-        'Fall': '09',
-        'Winter': '01',
-        'Spring': '04',
-        'Summer Session I': '07',
-        'Summer Session II': '08',
-      };
-      const month = quarterToMonthMapping[this.quarter];
-      const date = `${this.year}-${month}-01`;
-      formData.append('quarter', date);
-      formData.append('courseName', this.courseName);
-      formData.append('instructor', this.instructor);
-      formData.append('subject', this.subject);
-      formData.append('template', this.template);
-      formData.append('difficulty', this.difficulty);
-      formData.append('domain_id', '');
-      formData.append('name', '');
-      this.files.forEach(file => {
-        formData.append('content_files', file);
-      });
-
-      // Log formData entries
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-      try {
-        const response = await axios.post(`http://localhost:8080/qas/register?model_name=gpt-3.5-turbo`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        console.log('Form submitted successfully:', response.data);
-      } catch (error) {
-        console.error('Error submitting form:', error);
-      }
-    },
-    startGif() {
-      this.gifSrc = '/static/assets/rick-roll.gif';
-    },
-    stopGif() {
-      this.gifSrc = '/static/assets/rick-roll.png';
-    },
-    handleFilesUpload(event) {
-      const uploadedFiles = Array.from(event.target.files);
-      this.files = [...this.files, ...uploadedFiles];
-    },
-    removeFile(index) {
-      this.files.splice(index, 1);
-    },
-    fetchInstructors() {
-      this.showInstructorSuggestions = this.filteredInstructors.length > 0;
-    },
-    showAllInstructors() {
-      this.showInstructorSuggestions = this.instructors.length > 0;
-    },
-    hideInstructorSuggestions() {
-      setTimeout(() => {
-        this.showInstructorSuggestions = false;
-      }, 200);
-    },
-    selectInstructor(instructor) {
-      this.instructor = instructor;
-      this.showInstructorSuggestions = false;
-    },
-    fetchCourses() {
-      this.showCourseSuggestions = this.filteredCourses.length > 0;
-    },
-    showAllCourses() {
-      this.showCourseSuggestions = this.courses.length > 0;
-    },
-    hideCourseSuggestions() {
-      setTimeout(() => {
-        this.showCourseSuggestions = false;
-      }, 200);
-    },
-    selectCourse(course) {
-      this.courseName = course;
-      this.showCourseSuggestions = false;
-    },
-    fetchTemplates() {
-      this.showTemplateSuggestions = this.filteredTemplates.length > 0;
-    },
-    showAllTemplates() {
-      this.showTemplateSuggestions = this.templates.length > 0;
-    },
-    hideTemplateSuggestions() {
-      setTimeout(() => {
-        this.showTemplateSuggestions = false;
-      }, 200);
-    },
-    fetchSubjects() {
-      this.showSubjectSuggestions = this.filteredSubjects.length > 0;
-    },
-    showAllSubjects() {
-      this.showSubjectSuggestions = this.subjects.length > 0;
-    },
-    hideSubjectSuggestions() {
-      setTimeout(() => {
-        this.showSubjectSuggestions = false;
-      }, 200);
-    },
-    selectSubject(subject) {
-      this.subject = subject;
-      this.showSubjectSuggestions = false;
-    },
-    setSelectedTemplate(template) {
-      this.template = template;
-      this.showTemplateSuggestions = false;
-    },
-    selectOption(option) {
-      this.showInitialScreen = false;
-      this.isNewCourse = option === 'create';
-    },
-    fetchExistingCourses() {
-      this.showExistingCourseSuggestions = this.filteredExistingCourses.length > 0;
-    },
-    showAllExistingCourses() {
-      this.showExistingCourseSuggestions = this.existingCourses.length > 0;
-    },
-    hideExistingCourseSuggestions() {
-      setTimeout(() => {
-        this.showExistingCourseSuggestions = false;
-      }, 200);
-    },
-    selectExistingCourse(course) {
-      this.existingCourse = course;
-      this.showExistingCourseSuggestions = false;
-    },
-  }
-};
+  name: "HomePage",
+  friendly_name: "Home Page",
+  icon: "/static/assets/icon-HomePage.png"
+}
 </script>
 
 <style scoped>
 .home-page-wrapper {
   position: relative;
+  height: 100%;
 }
 
 .home-page {
-  padding: 20px;
   display: flex;
   flex-direction: row;
   width: 100%;
-  min-height: calc(100vh - 170px);
+  height: 100%;
   transition: filter 0.3s ease;
+}
+
+.container {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+}
+
+.form-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.left-half {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #000000;
+  overflow-y: auto;
+  height: 95%;
+}
+
+.right-half {
+  flex: 1;
+  padding: 10px;
+  padding-bottom: 50px;
+  display: flex;
+  overflow-y: auto;
+  height: 95%;
+}
+
+.input-box input[type="text"],
+.input-box select,
+.input-box button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  max-width: 400px;
+}
+
+.suggestion-content {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  word-wrap: break-word;
+}
+
+.upload-section {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+@media (max-width: 768px) {
+  .upload-section {
+    padding: 0 10px;
+  }
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
 }
 
 .initial-screen {
@@ -461,7 +463,7 @@ export default {
   align-items: center;
   gap: 20px;
   width: 100%;
-  height: 100vh-170px;
+  height: 90vh;
 }
 
 .option {
@@ -496,27 +498,16 @@ export default {
   color: white; /* Adjust color as needed */
 }
 
-.left-half {
-  flex: 1 1 45%;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  border-right: 2px solid #000000;
-}
-
-.right-half {
-  flex: 1 1 45%;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.course-details, .existing-course-details {
+.existing-course-details, .course-details {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Auto-fit content based on available space */
   gap: 20px;
-  padding: auto;
+}
+
+@media (max-width: 768px) {
+  .course-details, .existing-course-details {
+    grid-template-columns: 1fr;
+  }
 }
 
 .blurred {
@@ -524,30 +515,47 @@ export default {
   pointer-events: none;
 }
 
+.button {
+  padding: 15px 30px;
+  margin-bottom: 10px;
+  font-size: 1em;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 150px;
   background: rgba(255, 255, 255, 0.7);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   z-index: 1000;
 }
 
 .input-box {
-  position: relative; /* Add relative positioning for the suggestions list */
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between; /* Distribute space evenly */
   padding: 10px;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
   box-sizing: border-box;
+  width: 100%; /* Ensure full width within grid column */
+  height: 150px; /* Set a fixed height to make all boxes the same size */
 }
 
 .fixed-input {
@@ -561,13 +569,20 @@ export default {
   font-size: 0.8em;
 }
 
-.input-box input, .input-box select, .quarter-inputs input {
+.quarter-inputs select,
+.quarter-inputs input {
+  flex: 1;
+}
+
+.input-box input, .input-box select, .quarter-inp {
   padding: 10px;
   font-size: 0.6em;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
+  margin-bottom: 10px;
 }
 
 .quarter-inputs {
@@ -587,7 +602,7 @@ export default {
   align-items: center;
   cursor: pointer;
   text-align: center;
-  height: 91%;
+  height: 100%;
   padding: 10px;
   border: 2px solid #ccc;
   border-radius: 8px;
@@ -597,9 +612,8 @@ export default {
   font-size: 1em;
 }
 
-.form-container {
-  display: flex;
-  width: 100%; 
+.align-top-left {
+  align-self: flex-start;
 }
 
 .file-upload input[type="file"] {
@@ -611,8 +625,8 @@ export default {
   padding: 0;
   margin-top: 10px;
   width: 100%;
-  max-height: 350px; /* Set max-height to control the height of the upload section */
-  overflow-y: auto; /* Add scrollbar if the content exceeds max-height */
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 .file-upload li {
@@ -643,6 +657,8 @@ export default {
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
+  max-height: 70vh;
+  overflow: hidden;
 }
 
 .center-text {
@@ -653,6 +669,7 @@ export default {
   font-size: 1.2em;
   font-weight: bold;
   margin-bottom: 10px;
+  margin-right: 20px;
 }
 
 .tutorial-gif {
@@ -664,17 +681,41 @@ export default {
   margin-bottom: 20px;
 }
 
+.course-summary-box {
+  max-height: 1000px; /* Set the desired fixed height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 10px; /* Add some padding for better readability */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  border-radius: 4px; /* Optional: Add border-radius for rounded corners */
+  background-color: #f9f9f9; /* Optional: Add background color */
+}
+
+.summary-box {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
 .search-bar-inst {
   width: 20px;
   height: 20px;
   margin-left: 237px;
 }
 
+.submit-container,
+.search-container {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  margin-top: 20px;
+  margin-bottom: 50px;
+  width: 100%;
+}
+
 .submit-button {
-  position: fixed;
+  display: flex;
   justify-content: flex-end;
-  margin-top: 530px;
-  margin-left: 650px;
 }
 
 .search-bar-subj {
@@ -682,16 +723,26 @@ export default {
   height: 20px;
   margin-left: 257px;
 }
+
 .search-bar-template {
   width: 20px;
   height: 20px;
   margin-left: 180px;
 }
+
 .upload-file-icon {
   width: 40px;
   height: 40px;
   position: relative;
   top: 10px;
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* Align items to the start of the container */
+  overflow: auto;  /* Add scroll if content overflows */
+  max-height: 200px;  /* Set a maximum height */
 }
 
 .loading-icon {
@@ -718,7 +769,6 @@ textarea {
 }
 
 button {
-  margin-top: 20px;
   padding: 15px 30px;
   font-size: 1em;
   background-color: #007BFF;
@@ -726,7 +776,6 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  align-self: flex-end;
 }
 
 button:hover {
@@ -756,6 +805,78 @@ button:hover {
 
 .suggestions-list li:hover {
   background-color: #f0f0f0;
+}
+
+.search-button {
+  padding: 10px 20px; /* Smaller padding for a smaller button */
+  font-size: 0.8em; /* Smaller font size */
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.module-accordion-container {
+  max-height: 500px;
+  padding-bottom: 20px;
+  overflow-y: auto;
+}
+.module-accordion-item {
+  background-color: var(--bg-color);
+}
+.module-accordion-header {
+  margin: 0;
+  width: 100%;
+}
+.module-accordion-trigger {
+  font-size: 1.2rem; /* Adjust this value as needed */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2rem; /* Adjust height accordingly if needed */
+  width: 100%;
+  background-color: var(--core-primary);
+  color: var(--accent-primary);
+}
+
+.module-accordion-trigger[data-state="open"] > .dropdown-btn-icon {
+  transform: rotate(180deg);
+  transition: 300ms linear;
+}
+.module-accordion-trigger[data-state="closed"] > .dropdown-btn-icon {
+  transform: rotate(0deg);
+  transition: 300ms linear;
+}
+
+/* Adjusting the size of the dropdown arrows */
+.dropdown-btn-icon {
+  width: 30px; /* Smaller width */
+  height: 30px; /* Smaller height */
+  transition: transform 300ms linear;
+}
+
+
+.module-accordion-content {
+  max-height: 300px; /* Adjust this value as necessary for your layout */
+  overflow-y: auto; /* Enables vertical scrolling when content is too tall */
+  padding: 10px;
+  scrollbar-width: thin; /* For browsers that support it */
+  scrollbar-color: #888 #e0e0e0; /* For browsers that support it */
+}
+
+.module-accordion-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.module-accordion-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.module-accordion-content::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 2px solid #e0e0e0;
 }
 
 @keyframes spin {

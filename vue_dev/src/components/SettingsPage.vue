@@ -33,7 +33,7 @@
   <script>
   export default {
     name: 'SettingsPage',
-    friendly_name: "Settings Page",
+    friendly_name: "Settings",
     icon: "/static/assets/icon-SettingsPage.png",
     props: {
       msg: String

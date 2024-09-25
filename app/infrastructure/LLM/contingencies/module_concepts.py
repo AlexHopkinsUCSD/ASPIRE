@@ -5,6 +5,21 @@ from app.app.errors.llm_response_error import LLMResponseError
 
 logger = logging.getLogger(__name__)
 
+async def format_for_module_concepts_alone(response, validator_status, params):
+    try:
+        concepts = response.get('concepts')
+        return concepts
+    
+    except Exception as e:
+        logger.exception(msg="Failed to parse LLM response")
+        raise LLMResponseError(
+            message="Failed to parse LLM response.", 
+            action="module-concepts-alone",
+            status_code=500, 
+            failed_validators=[str(validator) for validator in validator_status if validator.status == 'FAIL'], 
+            llm_response=response
+            )
+
 async def format_for_module_concepts(response, validator_status, params):
     try:
         concepts = response.get('module_concepts').get("concepts")

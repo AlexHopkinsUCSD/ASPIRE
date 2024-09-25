@@ -61,6 +61,20 @@ class ContextConstructor:
         concepts = [val.name for val in concepts_obj.concepts]
         return ContextCollection(file_contents=self.file_contents, context_concepts=concepts)
 
+    @register.add(action="module-concepts-alone")
+    async def module_concepts(self, params=None) -> ContextCollection:
+        if not self.file_contents or not self.course_id:
+            message = f"METHOD: .module_concepts() missing required argument(s): {'course_id' if not self.course_id else ''} {'content_files' if not self.file_contents else ''}"
+            raise ValidationError(origin="ContextConstructor", status_code=400, message=message)
+        #TODO: error handling for when course_id invalid/get_one_course() fails
+        course_data = await self.course_repo.get_one(course_id=self.course_id)
+
+        #TODO: error handling for when domain invalid/get_all_concepts_in_domain() fails
+        concepts_obj = await self.c_to_d_repo.get_all(domain_id=course_data.course_id)
+        concepts = [val.name for val in concepts_obj.concepts]
+
+        return ContextCollection(file_contents=self.file_contents, context_concepts=concepts)
+
 
     @register.add(action="module-concepts")
     async def module_concepts(self, params=None) -> ContextCollection:

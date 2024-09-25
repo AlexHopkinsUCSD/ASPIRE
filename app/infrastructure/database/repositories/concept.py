@@ -4,14 +4,19 @@ from typing import List, Union, Literal
 
 from psycopg2.errors import  ForeignKeyViolation
 from sqlalchemy.exc import IntegrityError, StatementError
-from sqlmodel import Session, text, bindparam
+from sqlmodel import Session, text, bindparam, select, join, alias 
 
 from app.infrastructure.database.db import get_db
 
 from app.app.errors.db_error import DBError
 from app.domain.models.errors import DBError as DBErrorObj
 
+from app.domain.models.domain import Domain
+from app.domain.models.course import Course
+from app.domain.models.module import ModuleToCourse
+
 from app.domain.models.concept import (
+    Concept,
     ConceptRead, 
     ConceptCreate, 
     ConceptToDomainCreate, 
@@ -28,7 +33,8 @@ from app.domain.models.concept import (
     ConceptBulkRead,
     ConceptReadVerbose,
     ConceptToModuleDelete,
-    ConceptToConceptDelete
+    ConceptToConceptDelete,
+    ConceptReadPreformatted
     )
 from app.domain.protocols.repositories.concept import (
     ConceptRepository as ConceptRepositoryProtocol, 
@@ -149,46 +155,51 @@ class ConceptRepository(ConceptRepositoryProtocol):
             ) from e  
 
 
-    async def get_many(self, filters: ConceptFilter, domain_init_mode: bool=False, read_mode: Literal["normal", "verbose"] = "normal") -> Union[ConceptBulkRead, List[ConceptReadVerbose]]:
-
+    async def get_many(self, filters: ConceptFilter, domain_init_mode: bool=False, read_mode: Literal["normal", "verbose"] = "normal") -> Union[List[ConceptRead], List[ConceptReadVerbose]]:
         if domain_init_mode: 
-            query_stmt = f"""
-                        SELECT name, subject, difficulty 
-                        FROM concept
-                        WHERE 
-                        subject = 
-                        (
-                        SELECT subject FROM domain WHERE domain_id = 
-                        (SELECT domain_id FROM course WHERE course_id = :course_id)
-                        )
-                        AND 
-                        difficulty = 
-                        (
-                        SELECT DIFFICULTY FROM domain WHERE domain_id = 
-                        (SELECT domain_id FROM course WHERE course_id = :course_id)
-                        )      
-                        """
-            query_params = {"course_id": filters.course_id}
+            #TODO: Test that the updated query works
+            subquery = select(Concept).join(Course, Domain.domain_id == Course.domain_id).where(Course.course_id == filters.course_id).subquery()
+            statement = select(Concept).where(Concept.subject == subquery.c.subject).where(Concept.difficulty == subquery.c.difficulty)
 
         else:
-            query_stmt = f"""
-                        SELECT name, subject, difficulty  
-                        FROM concept
-                        {"WHERE" if filters.subject or filters.difficulty else ''}
-                        {"subject = :subject" if filters.subject else ''}
-                        {"AND" if filters.subject and filters.difficulty else ''}
-                        {"difficulty = :difficulty" if filters.difficulty else ''}
-                        """
-            query_params = filters.dict(exclude_none=True)
+            statement = select(Concept).distinct()
+            concept_to_module_alias_a = alias(ConceptToModule)
+            concept_to_module_alias_b = alias(ConceptToModule)
+
+            for key, filter_clause in filters.dict(exclude_none=True).items():
+
+                if key == "module_id":
+
+                    statement = statement.join(
+                        concept_to_module_alias_a, 
+                        (concept_to_module_alias_a.c.module_id == filter_clause) 
+                        & 
+                        (concept_to_module_alias_a.c.concept_name == Concept.name)
+                        )
+
+                elif key == "course_id":
+
+                    statement = statement.join(
+                        concept_to_module_alias_b, 
+                        Concept.name == concept_to_module_alias_b.c.concept_name
+                            ).join(
+                                ModuleToCourse, 
+                                (ModuleToCourse.module_id == concept_to_module_alias_b.c.module_id) 
+                                & 
+                                (ModuleToCourse.course_id == filter_clause)
+                                )
+
+                else:
+                    column = getattr(Concept, key)
+                    statement = statement.where(column==filter_clause)
 
         try:
-            results = self.db.exec(statement=text(query_stmt), params=query_params)
-
+            results = self.db.exec(statement=statement)
             if read_mode == "normal":
-                return ConceptBulkRead(concepts=[ConceptRead(**v) for v in results.mappings().fetchall()])
+                return [ConceptRead.from_orm(v) for v in results.fetchall()]
             
             else:
-                return [ConceptReadVerbose(**v) for v in results.mappings().fetchall()]
+                return [ConceptReadVerbose.from_orm(v) for v in results.fetchall()]
         
         except Exception as e:
             logger.exception(msg=f"Failed to retrieve concept(s) with filters: {filters.dict()}.")
@@ -198,7 +209,6 @@ class ConceptRepository(ConceptRepositoryProtocol):
                 status_code=500, 
                 message="Failed to select concepts"
                 ) from e
-        
 
 
 class ConceptToDomainRepository(CToDRepoProtocol):
@@ -453,7 +463,8 @@ class ConceptToConceptRepository(CToCRepoProtocol):
             query_params = {"concept_names": [val.name for val in concepts.concepts]}
             query_stmt = text(query_stmt_options[junction_direction]).bindparams(bindparam("concept_names", expanding=True))
             result = self.db.exec(statement=query_stmt, params=query_params)
-
+            self.db.close()
+            
             return [ConceptToConceptRead(**val) for val in result.mappings().fetchall()]
         
         except Exception as e:

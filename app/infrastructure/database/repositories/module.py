@@ -1,6 +1,6 @@
 import logging
 
-from typing import Optional, List, Literal
+from typing import Optional, List, Literal, Union
 
 from sqlalchemy.exc import IntegrityError
 from fastapi import Depends
@@ -81,9 +81,14 @@ class ModuleRepository(ModuleRepoProtocol):
                 message="Failed return module"
             ) from e
         
-    async def get_all(self, filter_name: Literal["course", "domain", "all"], filter_id: Optional[int]=None) -> List[ModuleRead]:
+    async def get_all(self, filter_name: Literal["course", "domain", "all"], filter_id: Optional[int]=None, id_only:bool=False) -> Union[List[ModuleRead], List[int]]:
         try:
-            query_stmt = "SELECT module.module_id, title, domain_id, content_summary FROM module"
+            if id_only:
+                query_stmt = "SELECT module.module_id FROM module"
+
+            else:
+                query_stmt = "SELECT module.module_id, title, domain_id, content_summary FROM module"
+
             filter_clause = ""
             params = {}
             if filter_name == "course":
@@ -98,6 +103,10 @@ class ModuleRepository(ModuleRepoProtocol):
             print(query_stmt)
 
             result = self.db.exec(statement=query_stmt, params=params)
+            self.db.close()
+            
+            if id_only:
+                return [module.get('module_id') for module in result.mappings().all()]
             return [ModuleRead(**module) for module in result.mappings().all()]
         
         except Exception as e:

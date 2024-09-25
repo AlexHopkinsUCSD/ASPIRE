@@ -4,6 +4,10 @@ from app.config.environment import get_settings
 from app.app import init_app
 from app.domain.models.trigger_event import TriggerEvent
 from app.domain.models.student import Student, StudentKnowledge, StudentToCourse
+from app.domain.services.platform_config import get_config_lti_adapter
+from app.domain.models.session import SessionExtended
+
+from fastapi_lti1p3 import init_adapter_config, ToolConfigSettings, PlatformConfigSettings
 
 
 # def _setup_logging(self):
@@ -17,6 +21,13 @@ from app.domain.models.student import Student, StudentKnowledge, StudentToCourse
 
 _SETTINGS = get_settings()
 
+adapter_tool_config = ToolConfigSettings(
+    **_SETTINGS.dict(), 
+    client_name=_SETTINGS.WEB_APP_TITLE, 
+    description=_SETTINGS.WEB_APP_DESCRIPTION, 
+    SESSION_CLASS=SessionExtended
+)
+init_adapter_config(tool_settings=adapter_tool_config, platform_settings=get_config_lti_adapter)
 
 app = init_app(_SETTINGS)
 

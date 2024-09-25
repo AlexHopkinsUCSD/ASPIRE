@@ -4,8 +4,11 @@ import re
 async def check_valid_json(self, response, validator_status, prompt, action, params):
     try:
         dict_response = json.loads(response)
+        print("check_valid_json: PASS")
         return "PASS", dict_response
     except Exception as e:
+        print(f"check_valid_json: FAIL - {str(e)}")
+        self.error_response = f"Invalid JSON format: {str(e)}"
         return "FAIL", response
     
 

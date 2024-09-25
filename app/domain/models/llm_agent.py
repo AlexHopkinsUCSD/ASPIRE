@@ -24,7 +24,7 @@ action_options = Literal["summarize", "domain-concepts", "module-concepts", "que
 
 class Validator(BaseModel):
     order: int
-    error_response: Optional[str]
+    error_response: Optional[str] = None
     status: str = "FAIL"
     function: Callable
 

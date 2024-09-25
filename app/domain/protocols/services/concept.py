@@ -1,4 +1,4 @@
-from typing import List, Protocol, Literal, Union
+from typing import List, Protocol, Literal, Union, Set, Optional, Dict
 
 from app.domain.models.concept import (
     ConceptRead, 
@@ -14,7 +14,8 @@ from app.domain.models.concept import (
     ConceptBulkRead,
     ConceptReadVerbose,
     ConceptToModuleDelete,
-    ConceptToConceptDelete
+    ConceptToConceptDelete,
+    ConceptReadPreformatted
 )
 
 
@@ -43,11 +44,17 @@ class ConceptService(Protocol):
         """
         ...
         
-    async def get_many_concepts(self, filters: ConceptFilter, read_mode: Literal["normal", "verbose"] = "normal") -> Union[ConceptBulkRead, List[ConceptReadVerbose]]:
+    async def get_many_concepts(self, filters: ConceptFilter, read_mode: Literal["normal", "verbose"] = "normal") -> Union[List[ConceptRead], List[ConceptReadVerbose]]:
         """
         Returns all concepts matching a set of filters.
         :param filters: ConceptFilter(course_id: Optional[int], subject: Optional[str], difficulty: Optional[int]) - specifies which params to filter concepts by.
         :param read_mode: ('normal', 'verbose') in 'normal' mode returns only the concept name for each matching concept, in 'verbose' mode returns all the details of each matching concept
+        """
+        ...
+
+    async def get_all_concepts_from_modules(self, module_ids:Set[int], course_id=Optional[int]) -> Dict[int, ConceptReadPreformatted]:
+        """
+        Returns all the concepts belonging to supplied modules, formatted as required for domain visualization and editing
         """
         ...
 

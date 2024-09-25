@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlmodel import Field, SQLModel, ForeignKey, Column, Integer
 
@@ -25,10 +25,17 @@ class ModuleRead(ModuleBaseExtended):
     pass
 
 class ModuleUpdate(SQLModel):
-    title: Optional[str]
-    content_summary: Optional[str]
+    title: Optional[str] = None
+    content_summary: Optional[str] = None
 
 
 class ModuleToCourse(SQLModel, table=True):
     module_id: int = Field(foreign_key="module.module_id", primary_key=True)
     course_id: int = Field(sa_column=Column(Integer, ForeignKey(column="course.course_id", ondelete="CASCADE"), primary_key=True))
+
+class ModuleConceptsResponse(SQLModel):
+
+    concepts: List[str]
+
+class ModuleSummary(SQLModel):
+    summary: str

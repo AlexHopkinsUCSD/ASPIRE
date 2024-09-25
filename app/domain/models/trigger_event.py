@@ -4,7 +4,7 @@ from sqlmodel import Field, SQLModel, Column, ARRAY, Integer
 
 class TriggerEventBase(SQLModel):
     datetime_stamp: datetime
-    student_id: int
+    student_id: int = Field(foreign_key="student.student_id")
     concept: str = Field(foreign_key="concept.name")
     value: float
     weight: float
@@ -20,7 +20,7 @@ class TriggerEventRead(TriggerEventBase):
 
 class TriggerEventProcess(SQLModel):
     event_ids: list[float]
-    concept: str
-    student_id: int
+    concept: str = Field(foreign_key="concept.name")
+    student_id: int = Field(foreign_key="student.student_id")
     numerator: float
     denominator: float

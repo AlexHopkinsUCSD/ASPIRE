@@ -15,9 +15,6 @@ from app.config.environment import Settings
 from app.infrastructure.database.db import create_db_and_tables, init_db
 from app.infrastructure.event_processor.process_manager import start_process_worker
 
-from fastapi_lti1p3.events.startup import init_adapter_config
-from fastapi_lti1p3.models.settings import ConfigSettings
-
 class TemplateMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
@@ -51,7 +48,7 @@ def init_database(app: FastAPI) -> FastAPI:
 def register_events(app: FastAPI) -> FastAPI:
     # TODO add events if applicable
     app.on_event("startup")(create_db_and_tables) # This event can be removed if not seeding a database
-    # app.on_event("startup")(start_process_worker)
+    app.on_event("startup")(start_process_worker)
 
     return app
 
@@ -61,10 +58,11 @@ def register_middleware(app: FastAPI) -> FastAPI:
 
     app.add_middleware(TemplateMiddleware)
     app.add_middleware(CORSMiddleware, 
-        allow_origins=["http://localhost:8081"], 
+        allow_origins=["*"], 
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"]
+        allow_headers=["*"],
+        expose_headers=["x-session-cookie"]
 )
     
     return app
@@ -80,10 +78,6 @@ def register_exception_handlers(app: FastAPI) -> FastAPI:
     
 
 def init_app(settings: Settings) -> FastAPI:
-    #FastAPI lti1.3 adapter config setup
-    adapter_config = ConfigSettings(**settings.dict())
-    init_adapter_config(adapter_config)
-
     app: FastAPI = pipe(
         settings,
         create_instance,

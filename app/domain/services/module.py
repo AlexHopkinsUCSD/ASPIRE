@@ -1,4 +1,4 @@
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Dict
 
 from fastapi import Depends, UploadFile
 
@@ -21,7 +21,7 @@ from app.domain.models.llm_agent import Validator, ContingencyFunctions
 from app.infrastructure.LLM.llm_agent import LLMAgent
 from app.infrastructure.LLM.contingencies.general import check_is_not_json, check_dict_values_not_json
 from app.infrastructure.LLM.contingencies.summarize import format_as_string
-from app.infrastructure.LLM.contingencies.module_concepts import format_for_module_concepts
+from app.infrastructure.LLM.contingencies.module_concepts import format_for_module_concepts, format_for_module_concepts_alone
 
 
 
@@ -35,6 +35,97 @@ class ModuleService(ModuleServiceProtocol):
         self.module_repo = module_repo
         self.concept_service = concept_service
         self.course_service = course_service
+
+    async def generate_module_summary(
+            self,
+            model_name: str,
+            form_data: ModuleForm,
+            prompt: str,
+            files: List[UploadFile]
+    ) -> str:
+        llm_agent = LLMAgent(content_files=files)
+        
+        validators = [Validator(order=1, function=check_is_not_json)]
+        c_func = ContingencyFunctions(validators=validators, formatter=format_as_string)
+        content_summary = await llm_agent.execute(action="summarize", contingency_functions=c_func, params = {
+            "model_name": model_name,
+            "prompt": prompt})
+
+        return {
+            "summary": content_summary
+        }
+
+    async def generate_module_concepts(
+            self,
+            model_name: str,
+            form_data: ModuleForm, 
+            prompt: str,
+            files: List[UploadFile],
+    ) -> List[str]:
+        llm_agent = LLMAgent(content_files=files, course_id=form_data.course_id)
+        
+        # Generate concepts
+        concept_validators = [
+            Validator(order=1, function=check_is_not_json),
+            Validator(order=2, function=check_dict_values_not_json)
+        ]
+        concept_contingency_functions = ContingencyFunctions(validators=concept_validators, formatter=format_for_module_concepts_alone)
+        
+        course = await self.course_service.get_one_course(course_id=form_data.course_id)
+        
+        llm_concept_result = await llm_agent.execute(
+            action="module-concepts-alone", 
+            contingency_functions=concept_contingency_functions, 
+            params={"domain_id": course.domain_id, 
+                    "subject": "comp-sci", 
+                    "difficulty": 1, 
+                    "model_name": model_name,
+                    "prompt": prompt}
+        )
+        
+        module_concepts = llm_concept_result
+
+        return {
+            "concepts": module_concepts
+        }
+
+    async def generate_module_prerequisites(
+            self,
+            module_id: int,
+            model_name: str
+    ) -> Dict[str, List[Dict[str, List[str]]]]:
+        module = await self.get_module(module_id)
+        course = await self.course_service.get_one_course(course_id='module.course_id')
+        
+        module_concepts = await self.concept_service.get_module_concepts(module_id)
+        
+        llm_agent = LLMAgent(course_id=module.course_id)
+        
+        validators = [
+            Validator(order=1, function=check_is_not_json),
+            Validator(order=2, function=check_dict_values_not_json)
+        ]
+        # c_func = ContingencyFunctions(validators=validators, formatter=format_for_module_prerequisites)
+        
+        llm_result = await llm_agent.execute(
+            action="module-prerequisites", 
+            # contingency_functions=c_func, 
+            params={
+                "domain_id": course.domain_id,
+                "subject": "comp-sci",
+                "difficulty": 1,
+                "model_name": model_name,
+                "module_concepts": [concept.name for concept in module_concepts]
+            }
+        )
+        
+        prerequisites = llm_result[1]  # Assuming this is where prerequisites are in the result
+
+        # Format prerequisites as a list of dictionaries
+        formatted_prerequisites = [{"concept": concept, "prerequisites": prereqs} for concept, prereqs in prerequisites.items()]
+
+        return {"prerequisites": formatted_prerequisites}
+
 
     async def create_module(
             self,
@@ -82,6 +173,10 @@ class ModuleService(ModuleServiceProtocol):
         llm_junctions = llm_result[1]
         module_concepts = llm_result[2]
 
+        print("llm_concepts", llm_concepts)
+        print("llm_junctions", llm_junctions)
+        print("module_concepts", module_concepts)
+
         await self.concept_service.init_module_concepts(
             module_id=result.module_id, 
             llm_concepts=llm_concepts, 
@@ -103,13 +198,19 @@ class ModuleService(ModuleServiceProtocol):
 
         return result
     
+    async def create_module_no_llm_no_concepts(self, module: ModuleCreateNoLLM) -> ModuleRead:
+        course = await self.course_service.get_one_course(course_id=module.course_id)
+        module = ModuleCreate(**module.dict(), domain_id=course.domain_id)
+        result = await self.module_repo.add(module=module)
 
+        return result
+        
     async def get_module(self, module_id: int) -> ModuleRead:
         return await self.module_repo.get_one(module_id=module_id)
     
 
-    async def get_course_modules(self, course_id: int) -> List[ModuleRead]:
-        return await self.module_repo.get_all(filter_name="course", filter_id=course_id)
+    async def get_course_modules(self, course_id: int, id_only:int=False) -> List[ModuleRead]:
+        return await self.module_repo.get_all(filter_name="course", filter_id=course_id, id_only=id_only)
 
 
     async def get_domain_modules(self, domain_id: int) -> List[ModuleRead]:

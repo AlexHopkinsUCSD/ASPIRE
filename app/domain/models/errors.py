@@ -32,7 +32,7 @@ class ErrorResponse(BaseModel):
 
 check_type_options = Literal["VALUE", "COLUMN", "TABLE"]
 response_type_options = Literal["DOES NOT EXIST"]
-  
+
 class ValidationError(BaseModel):
     check_type: check_type_options
     response_type: response_type_options

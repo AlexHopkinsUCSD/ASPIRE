@@ -131,3 +131,4 @@ dmypy.json
 # sso cert and key
 sp-cert.pem
 sp-key.pem
+/.idea

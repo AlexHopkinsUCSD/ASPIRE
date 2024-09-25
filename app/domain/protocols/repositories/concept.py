@@ -14,7 +14,8 @@ from app.domain.models.concept import (
     ConceptBulkRead,
     ConceptReadVerbose,
     ConceptToModuleDelete,
-    ConceptToConceptDelete
+    ConceptToConceptDelete,
+    ConceptReadPreformatted
     )
 
 class ConceptRepository(Protocol):
@@ -41,7 +42,7 @@ class ConceptRepository(Protocol):
         """
         ...
 
-    async def get_many(self, filters: ConceptFilter, domain_init_mode: bool=False, read_mode: Literal["normal", "verbose"] = "normal") -> Union[ConceptBulkRead, List[ConceptReadVerbose]]:
+    async def get_many(self, filters: ConceptFilter, domain_init_mode: bool=False, read_mode: Literal["normal", "verbose"] = "normal") -> Union[List[ConceptRead], List[ConceptReadVerbose]]:
         """
         Returns all concepts matching a set of filters.
         :param filters: ConceptFilter(course_id: Optional[int], subject: Optional[str], difficulty: Optional[int]) - specifies which params to filter concepts by.

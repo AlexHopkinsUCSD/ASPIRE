@@ -16,6 +16,7 @@ echo "Vue.js: Building App"
 npm run build
 
 STATIC_DIR=/app/app/static
+INDEX_DIR=/app/app/app/templates/index.html
 TEMPLATES_DIR=/app/app/app/templates
 
 echo "Vue.js: Clearing Static Files"
@@ -32,8 +33,8 @@ mv /app/vue_dev/dist/js $STATIC_DIR
 
 echo "Vue.js: Transfering Template File"
 
-rm -rf $TEMPLATES_DIR
-mkdir -p $TEMPLATES_DIR
+rm -rf $INDEX_DIR
+# mkdir -p $TEMPLATES_DIR
 mv /app/vue_dev/dist/index.html $TEMPLATES_DIR
 
 cd ../

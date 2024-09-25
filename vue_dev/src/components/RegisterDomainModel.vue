@@ -119,6 +119,7 @@
           'Content-Type': 'multipart/form-data',
         },
       });
+      
       data.value = response.data;
     } catch (err) {
       error.value = err.response ? err.response.data : err;

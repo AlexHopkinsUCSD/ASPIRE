@@ -1,11 +1,22 @@
 from pydantic import BaseModel
-from typing import Optional, Literal
+from typing import Optional, Literal, Union
+
+class ClientCredentials(BaseModel):
+    access_token: str
+    refresh_token: str
+    expires_in: int
+    token_type: str
+    user_id: Union[int, str]
+    name: str
+    global_id: Union[int, str]
 
 class Session(BaseModel):
     #Primary Key
     session_id: str
     id_token: dict
     csrf_token: str
+    client_credentials: Optional[ClientCredentials]
+    client_id: Optional[str]
 
     def __eq__(self, other):
         if isinstance(other, Session):
@@ -28,6 +39,8 @@ class Session(BaseModel):
 
     def __str__(self) -> str:
         return self.session_id
+    
+
 
 class Nonce(BaseModel):
     #Primary Key

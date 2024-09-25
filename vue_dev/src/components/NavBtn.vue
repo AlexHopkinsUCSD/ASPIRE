@@ -4,26 +4,32 @@ import { inject } from 'vue';
 const props = defineProps(["tab"]);
 const currentTab = inject("currentTab");
 
+const updateTab = () => {
+  currentTab.value = props.tab.name;
+};
 </script>
 
 <template>
+  <div @click="updateTab" class="nav-btn-wrapper">
     <img 
         class="nav-btn-icon" 
-        :class="{'btn-active': currentTab === props.tab.name}" 
+        :class="{'btn-active': currentTab.value === props.tab.name}" 
         :src="props.tab.icon" 
-        :title = "props.tab.name"
-        @click="currentTab = props.tab.name"
+        :title="props.tab.friendly_name"
     />
+  </div>
 </template>
-<style>
+
+<style scoped>
 .nav-btn-icon {
     border-radius: .5rem;
-    width: 70%;
+    width: 36px;
+    height: 36px;
     aspect-ratio: 1/1;
     text-align: center;
     padding: 0;
     color: #C69214;
-    display: fixed;
+    display: flex;
     align-items: center;
     justify-content: center;
     margin-top: .5rem;
@@ -50,5 +56,11 @@ const currentTab = inject("currentTab");
 
 .nav-btn-icon:hover {
     box-shadow: 2px 2px 4px 4px #C69214;
+}
+
+.nav-btn-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 </style>

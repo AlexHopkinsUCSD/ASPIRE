@@ -2,6 +2,8 @@ from typing import Optional, List, Union
 
 from fastapi import APIRouter, Depends, Response, Request
 
+from fastapi_lti1p3 import enforce_auth, Session
+
 from ..errors.db_error import DBError
 
 from app.domain.models.errors import ErrorResponse
@@ -13,7 +15,11 @@ from app.domain.models.trigger_event import TriggerEventCreate, TriggerEventRead
 
 from app.domain.protocols.services.student import StudentService as StudentServiceProtocol
 from app.domain.services.student import StudentService
-from app.domain.models.student import StudentRead, StudentCreate, StudentToCourseCreate
+from app.domain.models.student import StudentRead, StudentCreate, StudentToCourseCreate, StudentKnowledgeRead
+
+from app.domain.models.forms import list_concept_names
+
+from app.domain.models.concept import ConceptReadPreformatted
 
 
 router = APIRouter()
@@ -102,3 +108,26 @@ async def add_many_events(
             type=e.type,
             message=str(e)
         )
+
+
+@router.get("/model/course", name="Student:get-course-student-model")
+async def get_student_model_for_course(
+    request: Request, 
+    response: Response,
+    concepts: List[str] = Depends(list_concept_names),
+    student_service: StudentServiceProtocol = Depends(StudentService)
+    ) -> List[StudentKnowledgeRead]:
+    session_data: Session = await enforce_auth(request=request, accepted_roles={"StudentEnrollment"})
+    user_id = session_data.id_token.get("https://purl.imsglobal.org/spec/lti/claim/custom").get("user_id")
+
+    try:
+        return await student_service.get_student_model_from_concepts(concepts=concepts, student_id=user_id)
+
+    except DBError as e:
+        response.status_code = e.status_code
+        return ErrorResponse(
+            code=e.status_code,
+            type=e.type,
+            message=str(e)
+        )
+

@@ -1,16 +1,19 @@
-from typing import Optional, List, Annotated, Literal
 from datetime import date
-from sqlmodel import Field, SQLModel, Column, ARRAY, Integer
+from typing import Annotated, List, Literal, Optional
+
+from sqlmodel import ARRAY, Column, Field, Integer, SQLModel
+
 
 class AnswerBase(SQLModel):
     # Not required from LLM
     answer_text: str
     # 100 if correct, 0 if incorrect
     answer_weight: int
+    # answer_feedback: str
 
 class AnswerBaseExtended(AnswerBase):
     id: Optional[int] = Field(default=None, primary_key=True)
-    question_id: Optional[int] = Field(foreign_key="question.id")
+    question_id: Optional[int] = Field(default=None, foreign_key="question.id")
 
 class Answer(AnswerBaseExtended, table=True):
     pass
@@ -27,9 +30,7 @@ class QuestionBase(SQLModel):
     question_text: str
     # Not required from LLM
     points_possible: int
-    correct_comments: Optional[str]
-    incorrect_comments: Optional[str]
-    neutral_comments: Optional[str]
+    neutral_comments: str
 
 class Question(QuestionBase, table=True):
     pass
@@ -37,7 +38,7 @@ class Question(QuestionBase, table=True):
 class QuestionCreate(QuestionBase):
     pass
 
-class QuestionRead(QuestionBase):
+class QuestionRead(QuestionBase, table=True):
     pass
 
 class AnswerRead(AnswerBaseExtended):
@@ -53,3 +54,8 @@ class AnswerCreate(AnswerBaseExtended):
 class QuestionAnswerInput(SQLModel):
     question: QuestionCreate
     answers: List[AnswerPreCreate]
+
+
+class QuestionAnswerSelection(SQLModel):
+    question: Question
+    answers: List[AnswerRead]

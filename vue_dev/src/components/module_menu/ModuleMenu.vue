@@ -3,26 +3,9 @@ import ModuleMenuItems from './ModuleMenuItems.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionRoot, AccordionTrigger } from 'radix-vue'
 import { defineProps, defineEmits } from 'vue';
 
-const props = defineProps(["modules", "concepts", "selectedConcepts"])
+const props = defineProps(["modules", "concepts", "selectedConcepts", "moduleItems"])
 const emit = defineEmits(["updateSelectedModule", "updateSelectedNodes", "saveDomain", "addFile"])
 
-const accordionItems = [
-{
-    module_id: 1,
-    title: 'CSS - JavaScript - HTML',
-    content_summary: 'Yes. It adheres to the WAI-ARIA design pattern.',
-},
-{
-    module_id: 2,
-    title: 'Best Practices + DOM Manipulation',
-    content_summary: 'Yes. It\'s unstyled by default, giving you freedom over the look and feel.',
-},
-{
-    module_id: 3,
-    title: 'Styling',
-    content_summary: 'Yes! You can use the transition prop to configure the animation.'
-},
-]
 
 function moduleSelected(moduleId) {
     emit("updateSelectedModule", moduleId)
@@ -50,7 +33,7 @@ const onReaderLoad = (event) => {
     >
     <h3 class="roboto-bold">Modules</h3>
         <template
-        v-for="item in accordionItems"
+        v-for="item in props.moduleItems"
         :key="item.module_id"
         >
             <AccordionItem
@@ -103,7 +86,6 @@ h3 {
 }
 .module-accordion-item[data-state="open"]{
     max-height: calc(100% - 4rem);
-    /* height: fit-content; */
     display: flex;
     flex-direction: column;
 }

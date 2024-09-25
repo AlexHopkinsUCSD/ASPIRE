@@ -12,15 +12,15 @@ from app.domain.models.module import ModuleRead, ModuleUpdate, ModuleCreateNoLLM
 from app.domain.services.module import ModuleService
 from app.domain.protocols.services.module import ModuleService as ModuleServiceProtocol
 
+from fastapi_lti1p3 import enforce_auth, Session
 
 router = APIRouter()
 
-@router.post("/create/module", name="Module:create-module", response_model=Union[ModuleRead, ErrorResponse])
+@router.post("/", name="Module:create-module", response_model=Union[ModuleRead, ErrorResponse])
 async def create_module(
     request: Request, 
     response: Response,
     module: ModuleCreateNoLLM,
-    concepts: Optional[List[ConceptRead]] = None,
     module_service: ModuleServiceProtocol = Depends(ModuleService)
     ) -> Union[ModuleRead, ErrorResponse]:
     """
@@ -28,7 +28,7 @@ async def create_module(
     """
     #TODO: Update input structure to not require a domain_id
     try:
-        return await module_service.create_module_no_llm(module=module, concepts=concepts)
+        return await module_service.create_module_no_llm_no_concepts(module=module)
     
     except DBError as e:
         response.status_code = e.status_code
@@ -38,7 +38,7 @@ async def create_module(
             message=str(e)
         )
 
-@router.get("/get/{module_id}/module", name="Module:get-module", response_model=Union[ModuleRead, ErrorResponse])
+@router.get("/{module_id}/module", name="Module:get-module", response_model=Union[ModuleRead, ErrorResponse])
 async def get_module(
     request: Request, 
     response: Response,
@@ -59,16 +59,17 @@ async def get_module(
             message=str(e)
         )
 
-@router.get("/get/{course_id}/course", name="Module:get-all-modules-of-course", response_model=Union[List[ModuleRead], ErrorResponse])
+@router.get("/course", name="Module:get-all-modules-of-course", response_model=Union[List[ModuleRead], ErrorResponse])
 async def get_all_course_modules(
     request: Request, 
     response: Response,
-    course_id: int,
     module_service: ModuleServiceProtocol = Depends(ModuleService)
     ) -> Union[List[ModuleRead], ErrorResponse]:
     """
     Returns all modules within a course
     """
+    session_data: Session = await enforce_auth(request=request)
+    course_id = session_data.id_token.get("https://purl.imsglobal.org/spec/lti/claim/custom").get("course_id")
     try:
         return await module_service.get_course_modules(course_id=course_id)
 
@@ -80,7 +81,7 @@ async def get_all_course_modules(
             message=str(e)
         )
 
-@router.get("/get/{domain_id}/domain", name="Module:get-all-modules-of-domain", response_model=Union[List[ModuleRead], ErrorResponse])
+@router.get("/{domain_id}/domain", name="Module:get-all-modules-of-domain", response_model=Union[List[ModuleRead], ErrorResponse])
 async def get_all_domain_modules(
     request: Request, 
     response: Response,
@@ -101,7 +102,7 @@ async def get_all_domain_modules(
             message=str(e)
         )
 
-@router.get("/get/all", name="Module:get-all-modules", response_model=Union[List[ModuleRead], ErrorResponse])
+@router.get("/all", name="Module:get-all-modules", response_model=Union[List[ModuleRead], ErrorResponse])
 async def get_all_modules(
     request: Request, 
     response: Response,
@@ -110,8 +111,8 @@ async def get_all_modules(
     """
     Returns all modules
     """
+    await enforce_auth(request=request)
     try:
-        print("test")
         return await module_service.get_all_modules()
     
     except DBError as e:
@@ -122,7 +123,7 @@ async def get_all_modules(
             message=str(e)
         )
 
-@router.put("/update/{module_id}", name="Module:get-all-modules", response_model=Union[ModuleRead, ErrorResponse])
+@router.put("/{module_id}", name="Module:get-all-modules", response_model=Union[ModuleRead, ErrorResponse])
 async def update_module(
     request: Request, 
     response: Response,
@@ -144,7 +145,7 @@ async def update_module(
             message=str(e)
         )
 
-@router.delete("/delete/{module_id}/{course_id}", name="Module:delete-module-from-course")
+@router.delete("/{module_id}/{course_id}", name="Module:delete-module-from-course")
 async def delete_module_from_course(
     request: Request, 
     response: Response,

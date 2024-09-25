@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, List
 from app.domain.models.student import (
     StudentCreate, 
     StudentRead, 
@@ -16,6 +16,9 @@ class StudentRepository(Protocol):
         """
         pass
 
+    async def get(self, canvas_id: str) -> StudentRead:
+        ...
+
 
 class StudentToCourseRepository(Protocol):
     async def add(self, junction: StudentToCourseCreate) -> StudentToCourseRead:
@@ -31,6 +34,9 @@ class StudentKnowledgeRepository(Protocol):
         Returns a single StudentKnowledge entry matching the student_id and concept_name
         """
         pass
+
+    async def bulk_get(self, student_id: int, concept_list: List) -> List[StudentKnowledgeRead]:
+        ...
     
     async def add(self, score: StudentKnowledgeCreate) -> StudentKnowledgeRead:
         """

@@ -9,9 +9,8 @@ export default {
 import { ref, toRef, reactive, defineProps, defineEmits } from 'vue';
 import * as vNG from "v-network-graph"
 import dagre from "dagre/dist/dagre.min.js"
-import DomainMenu from "./DomainMenu.vue"
-import DomainZoomSlider from "./DomainZoomSlider.vue"
-import ConceptSearch from './ConceptSearch.vue'
+import DomainZoomSlider from "@/components/domain_dag/DomainZoomSlider.vue";
+
 
 
 const props = defineProps([
@@ -21,22 +20,18 @@ const props = defineProps([
     "focusNode",
     "defaultSettings",
     "selectedModule",
-    "selectedEdges"
+    "selectedEdges",
+    "getColor"
 ])
 const emit = defineEmits([
-    "updateNodes",
-    "updateSelectedNodes",
-    "updateFocusNodes",
-    "updateSelectedEdges",
-    "undo",
-    "redo",
-    "deleteConcepts",
-    "addConcept",
-    "joinConcepts",
-    "moduleConceptAdd",
-    "junctionDelete",
-    "moduleConceptDelete",
-    "transitiveReduction"
+    "onNodeClick",
+    "onNodeSelect",
+    "onNodeHover",
+    "onEdgeClick",
+    "onEdgeSelect",
+    "onEdgeHover",
+    "onBgClick",
+
 ])
 
 const hovered = ref(null)
@@ -47,31 +42,10 @@ const layouts = reactive({
 })
 
 
-function getColor(node, mode = "node") {
-    let color = props.defaultSettings.nodeColor
-    if (node.params.focusColor) {
-        color = node.params.focusColor
-    }
-    else if (props.selectedNodes.includes(node.id)) {
-        color = props.defaultSettings.focusColor
-    }
-    else if (node.module.includes(props.selectedModule)) {
-        color = props.defaultSettings.moduleColor
-    }
-    if (mode === "label")
-        return {
-            visible: true,
-            color: color,
-            padding: 2,
-            borderRadius: 5
-        }
-    else {
-        return color
-    }
-}
+
 
 function tempGetEdgeColor(edge) {
-    if (props.selectedEdges.includes(`edge-${edge.source}-${edge.target}`)) {
+    if (props.selectedEdges.includes(`edge|${edge.source}|${edge.target}`)) {
         return "#dd8800"
     } else {
         return "#aaa"
@@ -149,7 +123,7 @@ function compileConfig() {
                 strokeWidth: 0,
                 strokeColor: "#000000",
                 strokeDasharray: "0",
-                color: node => getColor(node)
+                color: node => props.getColor(node)
             },
             label: {
                 direction: "north",
@@ -202,22 +176,28 @@ function compileConfig() {
             strokeWidth: 0,
             strokeColor: "#000000",
             strokeDasharray: "0",
-            color: node => getColor(node)
+            color: node => props.getColor(node)
         }
+    }
+    if (props.defaultSettings.hoverable){
+        console.log("fired hover")
         config.node.hover = {
             type: "circle",
             radius: _ => (props.defaultSettings.nodeSize / 2) * zoomLevel.value + 8,
             strokeWidth: 0,
             strokeColor: "#000000",
             strokeDasharray: "0",
-            color: node => getColor(node)
+            color: node => props.getColor(node)
         }
+    }
+    if (props.defaultSettings.focusRing) {
         config.node.focusring = {
             width: 4,
             padding: 3,
             dasharray: "0",
             color: "#000000"
         }
+    }
         // config.node.label.color = node => (
         //     props.selectedNodes.includes(node.id) && !(props.focusNode === node.id)
         //         ?
@@ -226,7 +206,6 @@ function compileConfig() {
         //         props.defaultSettings.textColor
         // )
         // config.node.label.background = node => getColor(node, "label")
-    }
     return config
 }
 
@@ -242,9 +221,9 @@ function layout(direction) {
     g.setGraph({
         align: "UR",
         rankdir: direction,
-        nodesep: props.defaultSettings.nodeSize * 2,
+        nodesep: props.defaultSettings.nodeSize,
         edgesep: 0,
-        ranksep: props.defaultSettings.nodeSize * 8,
+        ranksep: props.defaultSettings.nodeSize * 4,
         // ranker: "tight-tree",
         acyclicer: 'greedy'
     })
@@ -263,7 +242,6 @@ function layout(direction) {
         g.setEdge(edge.source, edge.target)
     })
     dagre.layout(g)
-    console.log(g)
 
     g.nodes().forEach((nodeId) => {
         if (g.node(nodeId)) {
@@ -281,11 +259,6 @@ function updateLayout(direction) {
     graph.value.panToCenter()
 }
 
-function clearParams() {
-    emit("updateNodes", props.focusNode, false, "params", {})
-    emit('updateFocusNodes', "clear")
-}
-
 
 const configs = reactive(vNG.defineConfigs(compileConfig()))
 
@@ -294,7 +267,6 @@ const graph = ref(vNG.VNetworkGraphInstance)
 const isBoxSelectionMode = ref(false)
 
 function startBoxSelection() {
-    console.log("fired")
     graph.value?.startBoxSelection({
         stop: "click", // Trigger to exit box-selection mode
         type: "append", // Behavior when a node is within a selection rectangle
@@ -303,7 +275,6 @@ function startBoxSelection() {
 }
 
 function stopBoxSelection() {
-    console.log('fired2')
     graph.value?.stopBoxSelection()
 }
 
@@ -314,25 +285,53 @@ const eventHandlers = {
     },
     "node:pointerover": (node) => {
         hovered.value = node.node
+        emit("onNodeHover", true, node)
     },
-    "node:pointerout": (_) => {
+    "node:pointerout": (node) => {
         hovered.value = null
+        emit("onNodeHover", false, node)
+    },
+    "node:click": (node) => {
+        emit("onNodeClick", node)
     },
     "node:select": (node) => {
-        console.log("selected")
-        if (node.length === 1) {
-            clearParams()
-            emit("updateNodes", node[0], true, "focusColor", "#f55d42")
-            emit('updateFocusNodes', "push", node[0])
-        }
-        if (node.length === 0) {
-            clearParams()
-        }
-        emit("updateSelectedNodes", "update", node)
+        emit("onNodeSelect", node)
     },
     "edge:select": (edge) => {
-        emit("updateSelectedEdges", edge)
+        emit("onEdgeSelect", edge)
+    },
+    "view:click": (event) => {
+        emit('onBgClick', event)
     }
+}
+
+function snapToSelectedNodes(){
+    let coords = []
+    for (let selected of props.selectedNodes) {
+        const target_position = layouts.nodes[selected]
+        coords.push([target_position.x, target_position.y])
+    }
+    console.log(coords)
+    const total = coords.length
+
+    const sum = coords.reduce((acc, coord) => {
+        acc.x += coord[0];
+        acc.y += coord[1];
+        return acc;
+    }, { x: 0, y: 0 });
+
+    // Calculate the average x and y coordinates
+    const centerX = sum.x / total;
+    const centerY = sum.y / total;
+
+    console.log(centerX, centerY)
+    console.log(graph.value.getPan())
+    console.log(graph.value.translateFromSvgToDomCoordinates({x: centerX, y: centerY}))
+    graph.value.panTo(graph.value.translateFromSvgToDomCoordinates({x: centerX, y: centerY}))
+
+
+
+
 }
 
 </script>
@@ -349,45 +348,27 @@ const eventHandlers = {
             v-model:zoom-level="zoomLevel"
 
         />
-        <div class="menu-wheel">
-            <DomainMenu 
-                :emit="emit" 
-                :selected-concepts="props.selectedNodes"
-                :selected-edges="props.selectedEdges"
-                :selected-module="props.selectedModule"
-                @box-select="isBoxSelectionMode ? stopBoxSelection() : startBoxSelection()"
-            />
-        </div>
-        <div class="display-options">
-            <div class="options-menu">
-                <img title="Refresh Layout" aria-label="Refresh Layout" class="refresh-btn-icon"
-                src="/static/assets/loading-icon.png" @click="updateLayout('BT')" />
-                <img title="Undo" aria-label="Undo" class="refresh-btn-icon" src="/static/assets/icon-undo.png"
-                @click="emit('undo')" />
-                <img title="Redo" aria-label="Redo" class="refresh-btn-icon" src="/static/assets/icon-redo.png"
-                @click="emit('redo')" />
-            </div>
-            <DomainZoomSlider v-model:zoom-level="zoomLevel" />
-            <ConceptSearch 
-                :concepts="props.nodes" 
-                :selected-concepts="props.selectedNodes"
-                :emit="emit"
-            />
-        </div>
+        <DomainZoomSlider class="zoom-slider" v-model:zoom-level="zoomLevel" />
+        <slot 
+            :boxSelect="isBoxSelectionMode ? stopBoxSelection : startBoxSelection" 
+            :updateLayout="updateLayout"
+            :snapToSelectedNodes="snapToSelectedNodes"
+            >
+
+        </slot>
     </div>
 </template>
 
-<style scoped>
-.display-options {
+<style>
+
+.zoom-slider{
     position: absolute;
-    display: flex;
-    flex-direction: column;
     top: 6px;
     left: 6px;
     z-index: 999;
     width: 10rem;
-    
 }
+
 .popover-test {
     display: flex;
     width: fit-content;

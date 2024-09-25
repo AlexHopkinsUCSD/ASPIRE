@@ -1,4 +1,4 @@
-from typing import List, Union, Literal
+from typing import List, Union, Literal, Set, Optional, Dict
 from fastapi import Depends
 
 from app.domain.models.concept import (
@@ -15,7 +15,8 @@ from app.domain.models.concept import (
     ConceptFilter,
     ConceptReadVerbose,
     ConceptToModuleDelete,
-    ConceptToConceptDelete
+    ConceptToConceptDelete,
+    ConceptReadPreformatted
     )
 from app.domain.protocols.repositories.concept import (
     ConceptRepository as ConceptRepoProtocol,
@@ -67,14 +68,29 @@ class ConceptService(ConceptServiceProtocol, CToDServiceProtocol, CToMServicePro
 
     async def get_concept(self, concept_name: str, read_mode: Literal["normal", "verbose"] = "normal") -> Union[ConceptRead, ConceptReadVerbose]:
         return await self.concept_repo.get_one(concept_name=concept_name, read_mode=read_mode)
-        
 
-    async def get_many_concepts(self, filters: ConceptFilter, read_mode: Literal["normal", "verbose"] = "normal") -> Union[ConceptBulkRead, List[ConceptReadVerbose]]:
+
+    async def get_many_concepts(self, filters: ConceptFilter, read_mode: Literal["normal", "verbose"] = "normal") -> Union[List[ConceptRead], List[ConceptReadVerbose]]:
         return await self.concept_repo.get_many(filters=filters, read_mode=read_mode)
     
 
     async def get_domain_init_concepts(self, course_id:int) -> ConceptBulkRead:
         return await self.concept_repo.get_many(filters=ConceptFilter(course_id=course_id), domain_init_mode=True)
+
+
+    async def get_all_concepts_from_modules(self, module_ids:Set[int], course_id=Optional[int]) -> Dict[str, ConceptReadPreformatted]:
+        concepts = {}
+        for module_id in module_ids:
+            concept_filter = ConceptFilter(course_id=course_id, module_id=module_id)
+            results_list = await self.concept_repo.get_many(filters=concept_filter, read_mode="verbose")
+            for concept_item in results_list:
+                if concepts.get(concept_item.name) is not None:
+                    concepts[concept_item.name].module.append(module_id) 
+                    
+                else:
+                    concepts[concept_item.name] = ConceptReadPreformatted(**concept_item.dict(), module=[module_id], id=concept_item.name)
+        
+        return concepts 
 
 
     async def init_module_concepts(

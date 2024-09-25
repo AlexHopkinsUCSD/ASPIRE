@@ -1,5 +1,5 @@
 {
-    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+    "https: //purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
     "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
     "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
         "id": "a3944f869439534b632007a01a257899fa9fe1de",
@@ -13,25 +13,12 @@
     "aud": "268300000000000006",
     "azp": "268300000000000006",
     "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "242:a3944f869439534b632007a01a257899fa9fe1de",
-    "exp": 1718917152,
-    "iat": 1718913552,
+    "exp": 1721082305,
+    "iat": 1721078705,
     "iss": "https://canvas.instructure.com",
-    "nonce": "2gb6_e4g-NT36HBc6y0odCHBVFVJPftbYtKjPP0payM",
+    "nonce": "2688E2JOzEk_Y2Ulnz9K9xLXSNlvV8v6AGtuX-8FEXc",
     "sub": "c6ceb7cb-8d01-4dfa-8bbb-6425039e638b",
     "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "http://localhost:8080/oidc/launch",
-    "picture": "https://canvas.instructure.com/images/messages/avatar-50.png",
-    "email": "a2hopkins@ucsd.edu",
-    "name": "Alex Hopkins",
-    "given_name": "Alex",
-    "family_name": "Hopkins",
-    "https://purl.imsglobal.org/spec/lti/claim/lis": {
-        "person_sourcedid": None,
-        "course_offering_sourcedid": None,
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
     "https://purl.imsglobal.org/spec/lti/claim/context": {
         "id": "a3944f869439534b632007a01a257899fa9fe1de",
         "label": "ASPIRE-Test-Install",
@@ -73,107 +60,6 @@
         "http://purl.imsglobal.org/vocab/lis/v2/system/person#User"
     ],
     "https://purl.imsglobal.org/spec/lti/claim/custom": {},
-    "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
-        "scope": [
-            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
-            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
-            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
-            "https://purl.imsglobal.org/spec/lti-ags/scope/score"
-        ],
-        "lineitems": "https://ucsd-dev.instructure.com/api/lti/courses/107/line_items",
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
-    "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
-        "context_memberships_url": "https://ucsd-dev.instructure.com/api/lti/courses/107/names_and_roles",
-        "service_versions": [
-            "2.0"
-        ],
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/lti11_legacy_user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
-    "https://purl.imsglobal.org/spec/lti/claim/lti1p1": {
-        "user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
-        "oauth_consumer_key": "6hTcUvfWDZRNNhYCryUxa3nnNa7U2MLzBJPXZ4ZhJeRKN7RRna32KrhZ2RWEWvxc",
-        "oauth_consumer_key_sign": "PBS/MxFPv4FTbj+BEYMjH7UVYnslzAMZWNSY7Hcn7xg=",
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
-    "errors": {
-        "errors": {}
-    },
-    "https://www.instructure.com/placement": "course_navigation"
-}
-
-{
-    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
-    "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
-    "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
-        "id": "a3944f869439534b632007a01a257899fa9fe1de",
-        "description": None,
-        "title": "ASPIRE-Test-Install",
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
-    "aud": "268300000000000006",
-    "azp": "268300000000000006",
-    "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "242:a3944f869439534b632007a01a257899fa9fe1de",
-    "exp": 1719095221,
-    "iat": 1719091621,
-    "iss": "https://canvas.instructure.com",
-    "nonce": "afbXUkPnGdA2E_8AATw_WmWyOkUHttzPEnVrNvv0UcY",
-    "sub": "c6ceb7cb-8d01-4dfa-8bbb-6425039e638b",
-    "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "http://localhost:8080/oidc/launch",
-    "https://purl.imsglobal.org/spec/lti/claim/context": {
-        "id": "a3944f869439534b632007a01a257899fa9fe1de",
-        "label": "ASPIRE-Test-Install",
-        "title": "ASPIRE-Test-Install",
-        "type": [
-            "http://purl.imsglobal.org/vocab/lis/v2/course#CourseOffering"
-        ],
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
-        "guid": "iA0XrK7OfsuZvjtbx609EafgfC1iAEST8xHJcxuE",
-        "name": "University of California, San Diego",
-        "version": "cloud",
-        "product_family_code": "canvas",
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        }
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
-        "document_target": "iframe",
-        "return_url": "https://ucsd-dev.instructure.com/courses/107/external_content/success/external_tool_redirect",
-        "locale": "en",
-        "validation_context": None,
-        "errors": {
-            "errors": {}
-        },
-        "height": 800,
-        "width": 800
-    },
-    "locale": "en",
-    "https://purl.imsglobal.org/spec/lti/claim/roles": [
-        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
-        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Instructor",
-        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
-        "http://purl.imsglobal.org/vocab/lis/v2/system/person#User"
-    ],
-    "https://purl.imsglobal.org/spec/lti/claim/custom": {},
     "https://purl.imsglobal.org/spec/lti/claim/lti11_legacy_user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
     "https://purl.imsglobal.org/spec/lti/claim/lti1p1": {
         "user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
@@ -182,7 +68,7 @@
             "errors": {}
         },
         "oauth_consumer_key": "6hTcUvfWDZRNNhYCryUxa3nnNa7U2MLzBJPXZ4ZhJeRKN7RRna32KrhZ2RWEWvxc",
-        "oauth_consumer_key_sign": "f0zhVG0VAGVJfmewFMR+6tT3Z20tQgRpzSe6Jo0GTv0="
+        "oauth_consumer_key_sign": "U//FVgkt4dB+wk6J+4uQir8freYElAdKMvUe9OfHTPg="
     },
     "errors": {
         "errors": {}
@@ -193,7 +79,7 @@
     "given_name": "Alex",
     "family_name": "Hopkins",
     "https://purl.imsglobal.org/spec/lti/claim/lis": {
-        "person_sourcedid": None,
+        "person_sourcedid": "6711",
         "course_offering_sourcedid": None,
         "validation_context": None,
         "errors": {
@@ -225,3 +111,674 @@
     },
     "https://www.instructure.com/placement": "course_navigation"
 }
+
+
+{
+    "type"=>"string",
+    "enum"=>[
+        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+        "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+        "https://canvas.instructure.com/lti/public_jwk/scope/update",
+        "https://canvas.instructure.com/lti/account_lookup/scope/show",
+        "https://canvas.instructure.com/lti-ags/progress/scope/show",
+        "http://canvas.instructure.com/lti/page_content/show",
+        "https://canvas.instructure.com/lti/account_external_tools/scope/create",
+        "https://canvas.instructure.com/lti/account_external_tools/scope/destroy",
+        "https://canvas.instructure.com/lti/account_external_tools/scope/list",
+        "https://canvas.instructure.com/lti/account_external_tools/scope/show",
+        "https://canvas.instructure.com/lti/account_external_tools/scope/update",
+        "https://canvas.instructure.com/lti/data_services/scope/create",
+        "https://canvas.instructure.com/lti/data_services/scope/show",
+        "https://canvas.instructure.com/lti/data_services/scope/update",
+        "https://canvas.instructure.com/lti/data_services/scope/list",
+        "https://canvas.instructure.com/lti/data_services/scope/destroy",
+        "https://canvas.instructure.com/lti/data_services/scope/list_event_types",
+        "https://canvas.instructure.com/lti/feature_flags/scope/show",
+        "https://canvas.instructure.com/lti/replace_editor_contents"
+    ]
+}
+
+{
+    "access_token": "26830~Y68DrMDy6MmNJA9CRXmZNHzx93eKhX6w8McT3Ttcr6aGPGM4AtzM6e2rAkMBYLeH",
+    "token_type": "Bearer",
+    "user": {
+        "id": 107,
+        "name": "Alex Hopkins",
+        "global_id": "268300000000000107",
+        "effective_locale": "en"
+    },
+    "canvas_region": "us-west-2",
+    "refresh_token": "26830~MGaNYHeGWvDH2wcBXKPxhn2WNAZayTZBQWZ9nCPRR24VnLX2HCDY3AkXCfDUwF9n",
+    "expires_in": 3600
+}
+
+
+{
+    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+    "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+    "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "description": None,
+        "title": "ASPIRE-Test-Install",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "aud": "268300000000000006",
+    "azp": "268300000000000006",
+    "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "242:a3944f869439534b632007a01a257899fa9fe1de",
+    "exp": 1721194735,
+    "iat": 1721191135,
+    "iss": "https://canvas.instructure.com",
+    "nonce": "0fzmVv3_ocPIdTslOcRyDL5q0-5Y87XxVVH5-jFrg3Y",
+    "sub": "c6ceb7cb-8d01-4dfa-8bbb-6425039e638b",
+    "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "http://localhost:8080/oidc/launch",
+    "picture": "https://canvas.instructure.com/images/messages/avatar-50.png",
+    "email": "a2hopkins@ucsd.edu",
+    "name": "Alex Hopkins",
+    "given_name": "Alex",
+    "family_name": "Hopkins",
+    "https://purl.imsglobal.org/spec/lti/claim/lis": {
+        "person_sourcedid": "6711",
+        "course_offering_sourcedid": None,
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/context": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "label": "ASPIRE-Test-Install",
+        "title": "ASPIRE-Test-Install",
+        "type": [
+            "http://purl.imsglobal.org/vocab/lis/v2/course#CourseOffering"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
+        "guid": "iA0XrK7OfsuZvjtbx609EafgfC1iAEST8xHJcxuE",
+        "name": "University of California, San Diego",
+        "version": "cloud",
+        "product_family_code": "canvas",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
+        "document_target": "iframe",
+        "return_url": "https://ucsd-dev.instructure.com/courses/107/external_content/success/external_tool_redirect",
+        "locale": "en",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        },
+        "height": 1248,
+        "width": 2000
+    },
+    "locale": "en",
+    "https://purl.imsglobal.org/spec/lti/claim/roles": [
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/system/person#User"
+    ],
+    "https://purl.imsglobal.org/spec/lti/claim/custom": {
+        "user_id": "107",
+        "course_id": "107",
+        "user_membership": "TeacherEnrollment,Account Admin"
+    },
+    "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
+        "scope": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+            "https://canvas.instructure.com/lti-ags/progress/scope/show"
+        ],
+        "lineitems": "https://ucsd-dev.instructure.com/api/lti/courses/107/line_items",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
+        "context_memberships_url": "https://ucsd-dev.instructure.com/api/lti/courses/107/names_and_roles",
+        "service_versions": [
+            "2.0"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/lti11_legacy_user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+    "https://purl.imsglobal.org/spec/lti/claim/lti1p1": {
+        "user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        },
+        "oauth_consumer_key": "6hTcUvfWDZRNNhYCryUxa3nnNa7U2MLzBJPXZ4ZhJeRKN7RRna32KrhZ2RWEWvxc",
+        "oauth_consumer_key_sign": "sOpPir359j2NB58k6qim0bhmcAZjZHPt6Ae7siPD+78="
+    },
+    "errors": {
+        "errors": {}
+    },
+    "https://www.instructure.com/placement": "course_navigation"
+}
+
+{
+    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+    "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+    "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "description": None,
+        "title": "ASPIRE-Test-Install",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "aud": "268300000000000006",
+    "azp": "268300000000000006",
+    "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "242:a3944f869439534b632007a01a257899fa9fe1de",
+    "exp": 1721930112,
+    "iat": 1721926512,
+    "iss": "https://canvas.instructure.com",
+    "nonce": "05JUK3_5dF7JMzEaTu9EFyBGlucCw90cl-oJkgqc95s",
+    "sub": "c6ceb7cb-8d01-4dfa-8bbb-6425039e638b",
+    "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "http://localhost:8080/launch",
+    "picture": "https://canvas.instructure.com/images/messages/avatar-50.png",
+    "email": "a2hopkins@ucsd.edu",
+    "name": "Alex Hopkins",
+    "given_name": "Alex",
+    "family_name": "Hopkins",
+    "https://purl.imsglobal.org/spec/lti/claim/lis": {
+        "person_sourcedid": "6711",
+        "course_offering_sourcedid": None,
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/context": {
+        "id": "a3944f869439534b632007a01a257899fa9fe1de",
+        "label": "ASPIRE-Test-Install",
+        "title": "ASPIRE-Test-Install",
+        "type": [
+            "http://purl.imsglobal.org/vocab/lis/v2/course#CourseOffering"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
+        "guid": "iA0XrK7OfsuZvjtbx609EafgfC1iAEST8xHJcxuE",
+        "name": "University of California, San Diego",
+        "version": "cloud",
+        "product_family_code": "canvas",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
+        "document_target": "iframe",
+        "return_url": "https://ucsd-dev.instructure.com/courses/107/external_content/success/external_tool_redirect",
+        "locale": "en",
+        "height": 1248,
+        "width": 2000,
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "locale": "en",
+    "https://purl.imsglobal.org/spec/lti/claim/roles": [
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
+        "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#ContentDeveloper",
+        "http://purl.imsglobal.org/vocab/lis/v2/system/person#User"
+    ],
+    "https://purl.imsglobal.org/spec/lti/claim/custom": {
+        "user_id": "107",
+        "course_id": "107",
+        "user_membership": "DesignerEnrollment,Account Admin"
+    },
+    "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
+        "scope": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+            "https://canvas.instructure.com/lti-ags/progress/scope/show"
+        ],
+        "lineitems": "https://ucsd-dev.instructure.com/api/lti/courses/107/line_items",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
+        "context_memberships_url": "https://ucsd-dev.instructure.com/api/lti/courses/107/names_and_roles",
+        "service_versions": [
+            "2.0"
+        ],
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "https://purl.imsglobal.org/spec/lti/claim/lti11_legacy_user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+    "https://purl.imsglobal.org/spec/lti/claim/lti1p1": {
+        "user_id": "1d048ecc32604570686fcf91ec1eba508e267d3c",
+        "validation_context": None,
+        "errors": {
+            "errors": {}
+        }
+    },
+    "errors": {
+        "errors": {}
+    },
+    "https://www.instructure.com/placement": "course_navigation"
+}
+
+{
+    "issuer": "https://canvas.instructure.com",
+    "authorization_endpoint": "https://sso.canvaslms.com/api/lti/authorize_redirect",
+    "registration_endpoint": "https://ucsd-dev.instructure.com/api/lti/registrations",
+    "jwks_uri": "https://sso.canvaslms.com/api/lti/security/jwks",
+    "token_endpoint": "https://sso.canvaslms.com/login/oauth2/token",
+    "token_endpoint_auth_methods_supported": [
+        "private_key_jwt"
+    ],
+    "token_endpoint_auth_signing_alg_values_supported": [
+        "RS256"
+    ],
+    "scopes_supported": [
+        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+        "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+        "https://canvas.instructure.com/lti/public_jwk/scope/update",
+        "https://canvas.instructure.com/lti/account_lookup/scope/show",
+        "https://canvas.instructure.com/lti-ags/progress/scope/show",
+        "https://canvas.instructure.com/lti/page_content/show"
+    ],
+    "response_types_supported": [
+        "id_token"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "RS256"
+    ],
+    "claims_supported": [
+        "sub",
+        "picture",
+        "email",
+        "name",
+        "given_name",
+        "family_name",
+        "locale"
+    ],
+    "subject_types_supported": [
+        "public"
+    ],
+    "authorization_server": "sso.canvaslms.com",
+    "https://purl.imsglobal.org/spec/lti-platform-configuration": {
+        "product_family_code": "canvas",
+        "version": "vCloud",
+        "messages_supported": [
+            {
+                "type": "LtiResourceLinkRequest",
+                "placements": [
+                    "https://canvas.instructure.com/lti/account_navigation",
+                    "https://canvas.instructure.com/lti/assignment_edit",
+                    "https://canvas.instructure.com/lti/assignment_group_menu",
+                    "https://canvas.instructure.com/lti/assignment_index_menu",
+                    "https://canvas.instructure.com/lti/assignment_menu",
+                    "https://canvas.instructure.com/lti/assignment_selection",
+                    "https://canvas.instructure.com/lti/assignment_view",
+                    "https://canvas.instructure.com/lti/collaboration",
+                    "https://canvas.instructure.com/lti/conference_selection",
+                    "https://canvas.instructure.com/lti/course_assignments_menu",
+                    "https://canvas.instructure.com/lti/course_home_sub_navigation",
+                    "https://canvas.instructure.com/lti/course_navigation",
+                    "https://canvas.instructure.com/lti/course_settings_sub_navigation",
+                    "https://canvas.instructure.com/lti/discussion_topic_index_menu",
+                    "https://canvas.instructure.com/lti/discussion_topic_menu",
+                    "https://canvas.instructure.com/lti/file_index_menu",
+                    "https://canvas.instructure.com/lti/file_menu",
+                    "https://canvas.instructure.com/lti/global_navigation",
+                    "https://canvas.instructure.com/lti/homework_submission",
+                    "https://canvas.instructure.com/lti/link_selection",
+                    "https://canvas.instructure.com/lti/migration_selection",
+                    "https://canvas.instructure.com/lti/module_group_menu",
+                    "https://canvas.instructure.com/lti/module_index_menu",
+                    "https://canvas.instructure.com/lti/module_index_menu_modal",
+                    "https://canvas.instructure.com/lti/module_menu_modal",
+                    "https://canvas.instructure.com/lti/module_menu",
+                    "https://canvas.instructure.com/lti/post_grades",
+                    "https://canvas.instructure.com/lti/quiz_index_menu",
+                    "https://canvas.instructure.com/lti/quiz_menu",
+                    "https://canvas.instructure.com/lti/similarity_detection",
+                    "https://canvas.instructure.com/lti/student_context_card",
+                    "https://canvas.instructure.com/lti/submission_type_selection",
+                    "https://canvas.instructure.com/lti/tool_configuration",
+                    "https://canvas.instructure.com/lti/top_navigation",
+                    "https://canvas.instructure.com/lti/user_navigation",
+                    "https://canvas.instructure.com/lti/wiki_index_menu",
+                    "https://canvas.instructure.com/lti/wiki_page_menu",
+                    "ContentArea"
+                ]
+            },
+            {
+                "type": "LtiDeepLinkingRequest",
+                "placements": [
+                    "https://canvas.instructure.com/lti/assignment_selection",
+                    "https://canvas.instructure.com/lti/collaboration",
+                    "https://canvas.instructure.com/lti/conference_selection",
+                    "https://canvas.instructure.com/lti/course_assignments_menu",
+                    "https://canvas.instructure.com/lti/editor_button",
+                    "https://canvas.instructure.com/lti/homework_submission",
+                    "https://canvas.instructure.com/lti/link_selection",
+                    "https://canvas.instructure.com/lti/migration_selection",
+                    "https://canvas.instructure.com/lti/module_index_menu_modal",
+                    "https://canvas.instructure.com/lti/module_menu_modal",
+                    "https://canvas.instructure.com/lti/submission_type_selection",
+                    "ContentArea",
+                    "RichTextEditor"
+                ]
+            }
+        ],
+        "variables": [
+            "ResourceLink.id",
+            "ResourceLink.description",
+            "ResourceLink.title",
+            "ResourceLink.available.startDateTime",
+            "ResourceLink.available.endDateTime",
+            "ResourceLink.submission.endDateTime",
+            "com.instructure.User.observees",
+            "com.instructure.User.sectionNames",
+            "com.instructure.RCS.app_host",
+            "com.instructure.User.student_view",
+            "com.instructure.RCS.service_jwt",
+            "com.instructure.instui_nav",
+            "com.instructure.Observee.sisIds",
+            "Context.title",
+            "com.instructure.Editor.contents",
+            "com.instructure.Editor.selection",
+            "com.instructure.PostMessageToken",
+            "com.instructure.Assignment.lti.id",
+            "com.instructure.Assignment.description",
+            "com.instructure.Assignment.allowedFileExtensions",
+            "com.instructure.OriginalityReport.id",
+            "com.instructure.Submission.id",
+            "com.instructure.File.id",
+            "CourseOffering.sourcedId",
+            "Context.id",
+            "com.instructure.Context.globalId",
+            "com.instructure.Context.uuid",
+            "Context.sourcedId",
+            "Context.id.history",
+            "Message.documentTarget",
+            "Message.locale",
+            "ToolConsumerInstance.guid",
+            "Canvas.api.domain",
+            "Canvas.api.collaborationMembers.url",
+            "Canvas.api.baseUrl",
+            "ToolProxyBinding.memberships.url",
+            "Canvas.account.id",
+            "Canvas.account.name",
+            "Canvas.account.sisSourceId",
+            "Canvas.rootAccount.id",
+            "Canvas.rootAccount.sisSourceId",
+            "Canvas.externalTool.global_id",
+            "Canvas.externalTool.url",
+            "com.instructure.brandConfigJSON.url",
+            "com.instructure.brandConfigJSON",
+            "com.instructure.brandConfigJS.url",
+            "Canvas.css.common",
+            "Canvas.shard.id",
+            "Canvas.root_account.global_id",
+            "Canvas.root_account.id",
+            "vnd.Canvas.root_account.uuid",
+            "Canvas.root_account.sisSourceId",
+            "Canvas.course.id",
+            "vnd.instructure.Course.uuid",
+            "Canvas.course.name",
+            "Canvas.course.sisSourceId",
+            "com.instructure.Course.integrationId",
+            "Canvas.course.startAt",
+            "Canvas.course.endAt",
+            "Canvas.course.workflowState",
+            "Canvas.course.hideDistributionGraphs",
+            "Canvas.course.gradePassbackSetting",
+            "Canvas.term.startAt",
+            "Canvas.term.endAt",
+            "Canvas.term.name",
+            "Canvas.term.id",
+            "CourseSection.sourcedId",
+            "Canvas.enrollment.enrollmentState",
+            "com.instructure.Assignment.anonymous_grading",
+            "com.instructure.Assignment.restrict_quantitative_data",
+            "com.instructure.Course.gradingScheme",
+            "com.Instructure.membership.roles",
+            "Canvas.membership.roles",
+            "Canvas.membership.concludedRoles",
+            "Canvas.membership.permissions<>",
+            "Canvas.course.previousContextIds",
+            "Canvas.course.previousContextIds.recursive",
+            "Canvas.course.previousCourseIds",
+            "Person.name.full",
+            "Person.name.display",
+            "Person.name.family",
+            "Person.name.given",
+            "com.instructure.Person.name_sortable",
+            "Person.email.primary",
+            "com.instructure.Person.pronouns",
+            "vnd.Canvas.Person.email.sis",
+            "Person.address.timezone",
+            "User.image",
+            "User.id",
+            "Canvas.user.id",
+            "vnd.instructure.User.uuid",
+            "vnd.instructure.User.current_uuid",
+            "Canvas.user.prefersHighContrast",
+            "com.instructure.Course.groupIds",
+            "Canvas.group.contextIds",
+            "Membership.role",
+            "Canvas.xuser.allRoles",
+            "com.instructure.User.allRoles",
+            "Canvas.user.globalId",
+            "Canvas.user.isRootAccountAdmin",
+            "Canvas.user.adminableAccounts",
+            "User.username",
+            "Canvas.user.loginId",
+            "Canvas.user.sisSourceId",
+            "Canvas.user.sisIntegrationId",
+            "Person.sourcedId",
+            "Canvas.logoutService.url",
+            "Canvas.masqueradingUser.id",
+            "Canvas.masqueradingUser.userId",
+            "Canvas.xapi.url",
+            "Caliper.url",
+            "Canvas.course.sectionIds",
+            "Canvas.course.sectionRestricted",
+            "Canvas.course.sectionSisSourceIds",
+            "com.instructure.contextLabel",
+            "Canvas.module.id",
+            "Canvas.moduleItem.id",
+            "Canvas.assignment.id",
+            "Canvas.assignment.description",
+            "com.instructure.Group.id",
+            "com.instructure.Group.name",
+            "Canvas.assignment.title",
+            "Canvas.assignment.pointsPossible",
+            "Canvas.assignment.unlockAt",
+            "Canvas.assignment.lockAt",
+            "Canvas.assignment.dueAt",
+            "Canvas.assignment.unlockAt.iso8601",
+            "Canvas.assignment.lockAt.iso8601",
+            "Canvas.assignment.dueAt.iso8601",
+            "Canvas.assignment.earliestEnrollmentDueAt.iso8601",
+            "Canvas.assignment.allDueAts.iso8601",
+            "Canvas.assignment.published",
+            "Canvas.assignment.lockdownEnabled",
+            "Canvas.assignment.allowedAttempts",
+            "Canvas.assignment.submission.studentAttempts",
+            "LtiLink.custom.url",
+            "ToolProxyBinding.custom.url",
+            "ToolProxy.custom.url",
+            "ToolConsumerProfile.url",
+            "vnd.Canvas.OriginalityReport.url",
+            "vnd.Canvas.submission.url",
+            "vnd.Canvas.submission.history.url",
+            "Canvas.file.media.id",
+            "Canvas.file.media.type",
+            "Canvas.file.media.duration",
+            "Canvas.file.media.size",
+            "Canvas.file.media.title",
+            "Canvas.file.usageRights.name",
+            "Canvas.file.usageRights.url",
+            "Canvas.file.usageRights.copyrightText",
+            "com.instructure.Course.accept_canvas_resource_types",
+            "com.instructure.Course.canvas_resource_type",
+            "com.instructure.Course.canvas_resource_id",
+            "com.instructure.Course.allow_canvas_resource_selection",
+            "com.instructure.Course.available_canvas_resources",
+            "com.instructure.Account.usage_metrics_enabled",
+            "Canvas.environment.test"
+        ],
+        "https://canvas.instructure.com/lti/account_name": "University of California, San Diego",
+        "https://canvas.instructure.com/lti/account_lti_guid": "iA0XrK7OfsuZvjtbx609EafgfC1iAEST8xHJcxuE"
+    }
+}
+
+{
+    "application_type": "web",
+    "grant_types": [
+        "client_credentials",
+        "implicit"
+    ],
+    "initiate_login_uri": "",
+    "redirect_uris": [
+        ""
+    ],
+    "response_types": "id_token",
+    "client_name": "",
+    "jwks_uri": "",
+    "token_endpoint_auth_method": "private_key_jwt",
+    "scope": [
+        "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly"
+    ],
+    "https://purl.imsglobal.org/spec/lti-tool-configuration": {
+        "claims": [
+            "sub",
+            "iss",
+            "name"
+        ],
+        "custom_parameters": {
+            "roles": "$Canvas.membership.roles",
+            "user_id": "$User.id",
+            "course_id": "$Canvas.course.id"
+        },
+        "messages": [
+            {
+                "type": "LtiResourceLinkRequest",
+                "label": "Aspire",
+                "custom_parameters": {
+                    "roles": "$Canvas.membership.roles",
+                    "user_id": "$User.id",
+                    "course_id": "$Canvas.course.id"
+                },
+                "placements": [
+                    "course_navigation"
+                ],
+                "target_link_uri": "http://localhost:8080/launch",
+            }
+        ],
+        "target_link_uri": "http://tool.com/launch",
+        "privacy_level": "public"
+    }
+}
+
+[
+    {
+        "object": "edge",
+        "action": "delete",
+        "value": {
+            "target": "concept_4_module_1",
+            "source": "concept_x2_module_1_and_2"
+        }
+    },
+    {
+        "object": "edge",
+        "action": "add",
+        "value": {
+            "source": "concept_2_module_2",
+            "target": "concept_4_module_1"
+        }
+    },
+    {
+        "object": "node",
+        "action": "delete",
+        "value": {
+            "subject": "computer science",
+            "difficulty": 1,
+            "name": "concept_x2_module_1_and_2",
+            "id": "concept_x2_module_1_and_2",
+            "module": [
+                1,
+                2
+            ],
+            "params": {
+                "focusColor": "#f55d42"
+            }
+        }
+    },
+    {
+        "object": "node",
+        "action": "add",
+        "value": {
+            "name": "test add concept",
+            "id": "test add concept",
+            "module": [
+                1
+            ]
+        }
+    },
+    {
+        "object": "nodeToModule",
+        "action": "add",
+        "value": {
+            "nodeIds": [
+                "test add concept"
+            ],
+            "module": 1
+        }
+    },
+    {
+        "object": "nodeToModule",
+        "action": "delete",
+        "value": {
+            "nodeIds": [
+                "concept_4_module_1"
+            ],
+            "module": 1
+        }
+    }
+]
+
+
+[{"timestamp": "2024-09-03T20:58:32.486517", "score": 0.6098180694614526, "no_of_inputs": 5}, {"timestamp": "2024-09-03T20:59:23.097810", "score": 0.6530885381491212, "no_of_inputs": 8}]

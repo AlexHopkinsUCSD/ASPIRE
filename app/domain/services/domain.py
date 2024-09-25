@@ -17,3 +17,6 @@ class DomainService(DomainServiceProtocol):
 
     async def create_domain(self, domain: DomainCreate) -> Union[DomainRead, ErrorResponse]:
         return await self.domain_repo.add(domain)
+
+    async def get_domain(self, domain_id: int) -> DomainRead:
+        return await self.domain_repo.get_one(domain_id=domain_id)

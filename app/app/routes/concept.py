@@ -1,13 +1,18 @@
-from typing import List, Union
+from typing import List, Union, Dict
 
 from fastapi import APIRouter, Depends, Response, Request
+from fastapi.responses import JSONResponse
 
 from ..errors.db_error import DBError
 from app.domain.models.errors import ErrorResponse
 
-from app.domain.models.concept import ConceptCreate, ConceptCreateBulkRead, ConceptRead, ConceptFilter, ConceptReadVerbose
+from app.domain.models.forms import ListOfModuleIds, list_module_ids
+
+from app.domain.models.concept import ConceptCreate, ConceptCreateBulkRead, ConceptRead, ConceptFilter, ConceptReadVerbose, ConceptReadPreformatted
 from app.domain.protocols.services.concept import ConceptService as ConceptServiceProtocol
 from app.domain.services.concept import ConceptService
+
+from fastapi_lti1p3 import enforce_auth
 
 router = APIRouter()
 
@@ -55,7 +60,7 @@ async def add_concepts(
         )
 
 
-@router.get("/{concept_name}", name="Concept:get-concepts", response_model=Union[ConceptReadVerbose, ErrorResponse])
+@router.get("/one/{concept_name}", name="Concept:get-concepts", response_model=Union[ConceptReadVerbose, ErrorResponse])
 async def get_concept(
     request: Request, 
     response: Response,
@@ -98,3 +103,18 @@ async def get_concept_filtered(
             message=str(e)
         )
 
+
+@router.get("/from_modules", name="Concept:get-all-concepts-of-modules", response_model=Dict[str, ConceptReadPreformatted])
+async def get_concepts_from_modules(
+    request: Request,
+    module_ids: ListOfModuleIds = Depends(list_module_ids),
+    concept_service: ConceptServiceProtocol = Depends(ConceptService)
+    ):
+    """
+    Returns a prepackaged collection of concepts belonging to all supplied modules the client is authorized to access, structured for use within a domain editor/visualizer
+    """
+    session_data = await enforce_auth(request=request)
+    course_id = session_data.id_token.get("https://purl.imsglobal.org/spec/lti/claim/custom").get("course_id")
+    
+    results = await concept_service.get_all_concepts_from_modules(course_id=course_id, module_ids=set(module_ids.ids))
+    return results

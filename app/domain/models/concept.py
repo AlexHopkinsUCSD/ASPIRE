@@ -5,7 +5,12 @@ from .errors import DBError
 
 
 class ConceptBase(SQLModel):
-    name: str = Field(max_length=255, sa_column=Column("name", VARCHAR, unique=True, primary_key=True))
+    #
+    name: str = Field(
+        max_length=255, 
+        regex=r"^[^|]+$", 
+        description="The name of a unique concept, cannot include '|' for delimitation purposes.",
+        sa_column=Column("name", VARCHAR, unique=True, primary_key=True))
 
 class ConceptBaseExtended(SQLModel):
     subject: str
@@ -23,6 +28,11 @@ class ConceptRead(ConceptBase):
 class ConceptReadVerbose(ConceptBase, ConceptBaseExtended):
     pass
 
+class ConceptReadPreformatted(ConceptReadVerbose):
+    id: str
+    module: List[int] 
+    params: dict = {}
+
 class ConceptCreateBulkRead(SQLModel):
     success: Union[List[ConceptRead], None]
     failed: Union[List[DBError], None]
@@ -31,9 +41,10 @@ class ConceptBulkRead(SQLModel):
     concepts: List[ConceptRead]
 
 class ConceptFilter(SQLModel):
-    course_id: Optional[int]
-    subject: Optional[str]
-    difficulty: Optional[int]
+    course_id: Optional[int] = None
+    subject: Optional[str] = None
+    difficulty: Optional[int] = None
+    module_id: Optional[int] = None
 
 class ConceptFilterByCourse(SQLModel):
     course_id: int
@@ -42,8 +53,11 @@ class ConceptFilterByCourse(SQLModel):
 
 
 class ConceptToConceptBase(SQLModel):
-    concept_name: str = Field(foreign_key="concept.name", primary_key=True)
-    prereq_name: str = Field(foreign_key="concept.name", primary_key=True)
+    concept_name: str = Field(foreign_key="concept.name", primary_key=True, alias="target")
+    prereq_name: str = Field(foreign_key="concept.name", primary_key=True, alias="source")
+
+    # class Config:
+    #     populate_by_name=True
 
 class ConceptToConcept(ConceptToConceptBase, table=True):
     pass

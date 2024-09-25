@@ -1,9 +1,10 @@
+import axios from "axios";
 import { reactive, ref } from "vue";
 
 export default class DomainDagUtilities {
-    constructor(initialNodes={}, initialEdges={}) {
-        this.nodes = ref(initialNodes)
-        this.edges = ref(initialEdges)
+    constructor() {
+        this.nodes = ref({})
+        this.edges = ref({})
         this.focusNode = ref()
         this.selectedNodes = ref([])
         this.selectedEdges = ref([])
@@ -12,17 +13,28 @@ export default class DomainDagUtilities {
         this.historyIndex = -1
         this.saving = ref(false)
         this.settings = reactive({})
+        this.is_initialized = ref(false)
+    }
+
+    initialize = (nodes, edges) => {
+        this.nodes.value = nodes
+        this.edges.value = edges
+        this.is_initialized.value = true
     }
 
     uploadDomain = (domainJson) => {
-        console.log(domainJson)
         this.nodes.value = domainJson.nodes
         this.edges.value = domainJson.edges
         this.changeHistory = []
         this.historyIndex = -1
+        this.is_initialized.value = true
     }
 
-    saveDomain = () => {
+    saveDomain = async () => {
+        await axios.put(`${window.contextData.tool_domain}/domain`, this.changeHistory)
+    }
+
+    saveDomainToJSON = () => {
         this.saving.value = true
 
         const date = new Date().toDateString()
@@ -161,7 +173,7 @@ export default class DomainDagUtilities {
     }
 
     addEdge = (edge, isFromHistory=false) => {
-        const newEdgeId = `edge-${edge.target}-${edge.source}`
+        const newEdgeId = `edge|${edge.target}|${edge.source}`
         // const edgeValues = Object.keys(this.edges)
         if (!this.edges.value[newEdgeId]) {
             this.edges.value[newEdgeId] = edge
@@ -177,7 +189,7 @@ export default class DomainDagUtilities {
             const newEdge = {source: this.selectedNodes.value[node], target: this.focusNode.value,}
             // checks if the new edge already exists and that the new edge doesn't contain nodes linked to themselves
             if (!edgeValues.some(node => JSON.stringify(node) === JSON.stringify(newEdge)) && newEdge.source !== newEdge.target) {
-                this.edges.value[`edge-${newEdge.target}-${newEdge.source}`] = newEdge
+                this.edges.value[`edge|${newEdge.target}|${newEdge.source}`] = newEdge
                 this.updateChangeHistory({object: "edge", action: "add", value: newEdge})
             }
         }
@@ -201,7 +213,7 @@ export default class DomainDagUtilities {
     deleteAllNodeEdges = (nodeId) => {
         // creates a list of edge ids containing the id of the node being deleted
         // edge id must be formatted as 'edge-{source node id}-{target node id}' for the split and filter statement to work properly
-        const validEdgeIds = Object.keys(this.edges.value).filter(key => key.split("-").includes(nodeId))
+        const validEdgeIds = Object.keys(this.edges.value).filter(key => key.split("|").includes(nodeId))
         for (let edgeId of validEdgeIds) {
             this.updateChangeHistory({object: "edge", action: "delete", value: this.edges.value[edgeId]})
             delete this.edges.value[edgeId]

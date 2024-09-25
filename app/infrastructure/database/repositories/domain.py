@@ -2,7 +2,7 @@ import logging
 
 from typing import Union
 from fastapi import Depends
-from sqlmodel import Session
+from sqlmodel import Session, text
 
 from app.infrastructure.database.db import get_db
 
@@ -41,3 +41,22 @@ class DomainRepository(DomainRepoProtocol):
                 status_code=500,
                 message="Failed to create domain"
             ) from e
+        
+
+    async def get_one(self, domain_id: int) -> DomainRead:
+        try:
+            query_stmt = text("SELECT * FROM domain WHERE domain_id = :domain_id")
+            result = self.db.exec(statement=query_stmt, params={"domain_id": domain_id})
+            return DomainRead(**result.mappings().fetchone())
+        
+        except Exception as e:
+            logger.exception(msg=f"Failed to return Module object.")
+            raise DBError(
+                origin="DomainRepository.get_one",
+                type="ReturnError",
+                status_code=500,
+                message="Failed return domain"
+            ) from e
+        
+        finally:
+            self.db.close()

@@ -1,7 +1,9 @@
 <script setup>
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
 
-const props = defineProps(["concepts", "selectedConcepts", "emit"])
+const props = defineProps(["concepts", "selectedConcepts", "emit", "snapToSelectedNodes"])
+const emit = defineEmits(["updateSelectedNodes"])
+console.log(props.emit)
 
 const searchTerm = ref('')
 const isOpen = ref(false)
@@ -22,13 +24,15 @@ function openToggle() {
 
 function selectConcepts(concept) {
     console.log(concept)
+    console.log(props.emit)
     const selectedArray = props.selectedConcepts
     if (selectedArray.includes(concept)) {
-        props.emit("updateSelectedNodes", "update", selectedArray.filter(node => node !== concept))
+        emit("updateSelectedNodes", "update", selectedArray.filter(node => node !== concept))
     } else {
         selectedArray.push(concept)
-        props.emit("updateSelectedNodes", "update", selectedArray)
+        emit("updateSelectedNodes", "update", selectedArray)
     }
+    // props.snapToSelectedNodes()
 }
 
 </script>
@@ -88,7 +92,7 @@ background-color: greenyellow;
 .search-input {
     border: none;
     background: none;
-    width: 8rem;
+    width: calc(100% - 1rem);
 }
 .search-input:focus {
     outline: none;

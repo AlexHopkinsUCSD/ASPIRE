@@ -142,6 +142,8 @@ class LLMAgent(LLMAgentProtocol):
         
         context = await self.context_constructor.construct(action=action, params=params)
         prompt, response = await self.action_executor.execute(action=action, context=context, params=params)
+        print("The prompt being sent is:", prompt)
+        print("The response being sent is:", response)
         response = await self.runContingencies(
             response=response, 
             prompt=prompt, 
@@ -151,4 +153,5 @@ class LLMAgent(LLMAgentProtocol):
             add_cycles=add_cycles
             )
         
+        print(response)
         return response

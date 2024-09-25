@@ -15,7 +15,7 @@ class CourseBaseExtended(CourseBase):
     name: str = Field(max_length=255)
     quarter: date
     instructor: str
-    course_summary: Optional[str]
+    course_summary: Optional[str] = None
 
 class CourseBaseFull(CourseBaseExtended):
     user_ids: Optional[List[str]] = Field(default=None, sa_column=Column(ARRAY(Integer())))
@@ -43,15 +43,15 @@ class CourseReadVerbose(CourseBaseExtended):
     pass
 
 class CourseFilter(BaseModel):
-    name: Optional[str]
-    instructor: Optional[str]
-    quarter: Optional[date]
-    quarter_filter: Optional[Literal["equal", "newer", "older", "newer-inclusive", "older-inclusive"]]
-    subject: Optional[str]
-    difficulty: Optional[int]
+    name: Optional[str] = None
+    instructor: Optional[str] = None
+    quarter: Optional[date] = None
+    quarter_filter: Optional[Literal["equal", "newer", "older", "newer-inclusive", "older-inclusive"]] = None
+    subject: Optional[str] = None
+    difficulty: Optional[int] = None
 
 class CourseUpdate(SQLModel):
-    name: Optional[str]
-    instructor: Optional[str]
-    quarter: Optional[date]
-    course_summary: Optional[str]
+    name: Optional[str] = None
+    instructor: Optional[str] = None
+    quarter: Optional[date] = None
+    course_summary: Optional[str] = None

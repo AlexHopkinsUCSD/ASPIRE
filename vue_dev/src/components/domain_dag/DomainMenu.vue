@@ -1,7 +1,16 @@
 <script setup>
 import { onMounted, defineProps, defineEmits } from 'vue';
-const props = defineProps(["emit", "selectedConcepts", "selectedEdges", "selectedModule"])
-const menuEmit = defineEmits(['boxSelect'])
+const props = defineProps([
+    "selectedConcepts", 
+    "selectedEdges", 
+    "selectedModule"
+])
+
+const menuEmit = defineEmits([
+    'boxSelect', 
+    'emitHandler'
+])
+
 let isOpen = true
 
 function toggleOpen() {
@@ -27,10 +36,8 @@ onMounted(() => toggleOpen())
 function menuClick(event) {
     console.log(event)
     if (event !== "boxSelect") {
-        console.log("wrong")
-        props.emit(event)
+        menuEmit("emitHandler", event)
     } else {
-        console.log("correct")
         menuEmit("boxSelect")
     }
 }

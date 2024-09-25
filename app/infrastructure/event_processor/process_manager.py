@@ -47,21 +47,52 @@ class Process_Manager:
                     paused = True
                     logger.info("Queue empty process paused")
 
-                time.sleep(60)
+            time.sleep(60)
 
     async def run(self, events):
             if not events:
                 logger.info("No events to process")
             else:
                 for event in events:
+                    input_count = len(event.event_ids)
                     try:
                         score = await self.s_k_repo.get(student_id=event.student_id, concept_name=event.concept)
-                        new_score = (event.numerator + score.score) / (event.denominator + 1)
-                        await self.s_k_repo.update(StudentKnowledgeCreate(student_id=event.student_id, concept_name=event.concept, score=new_score))
+                        calculated_numerator = event.numerator + score.numerator
+                        calculated_denominator = event.denominator + score.denominator
+
+                        new_score = calculated_numerator / calculated_denominator
+
+                        await self.s_k_repo.update(
+                            StudentKnowledgeCreate(
+                                student_id=event.student_id, 
+                                concept_name=event.concept, 
+                                numerator=calculated_numerator,
+                                denominator=calculated_denominator,
+                                score=new_score,
+                                no_of_inputs=score.no_of_inputs + input_count
+                                ))
                         await self.event_repo.bulk_delete(event_ids=event.event_ids)
 
                     except Exception as e:
-                        new_score = event.numerator / event.denominator
-                        await self.s_k_repo.add(StudentKnowledgeCreate(student_id=event.student_id, concept_name=event.concept, score=new_score))
-                        await self.event_repo.bulk_delete(event_ids=event.event_ids)
+                        try:
+                            calculated_numerator = event.numerator + .5
+                            calculated_denominator = event.denominator + 1
+                            new_score = calculated_numerator / calculated_denominator
+
+                            await self.s_k_repo.add(
+                                StudentKnowledgeCreate(
+                                    student_id=event.student_id, 
+                                    concept_name=event.concept, 
+                                    numerator=calculated_numerator,
+                                    denominator=calculated_denominator,
+                                    score=new_score,
+                                    no_of_inputs=input_count
+                                    )
+                                    )
+                            await self.event_repo.bulk_delete(event_ids=event.event_ids)
+
+                        except Exception as e:
+                            #Fails if student id doesn't exist in system
+                            logger.exception(msg=f"Either student with student_id: {event.student_id}, or concept with concept_name: {event.concept} does not exist.")
+                            continue
 

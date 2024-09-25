@@ -1,24 +1,29 @@
-class BaseValidationError(Exception):
-    def __init__(
-        self, 
-        message: str, 
-        status_code: int, 
-    ) -> None:
-        
+from .base_error import BaseError
+
+class NonceValidationError(BaseError):
+    pass
+
+
+class StateValidationError(BaseError):
+    pass
+
+
+class TokenValidationError(BaseError):
+    pass
+
+class ConfigValidationError(Exception):
+    def __init__(self, message: str) -> None:
         self.message = message
-        self.status_code = status_code
 
     def __str__(self):
         return self.message
 
+    
+class AuthValidationError(Exception):
+    def __init__(self, status_code: int, message: str) -> None:
+            self.status_code = status_code
+            self.message = message
 
-class NonceValidationError(BaseValidationError):
-    pass
-
-
-class StateValidationError(BaseValidationError):
-    pass
-
-
-class TokenValidationError(BaseValidationError):
-    pass
+    def __str__(self):
+        return self.message
+    
